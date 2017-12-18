@@ -2,19 +2,31 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/golang/sync/errgroup"
-	"net/http"
 	"time"
-	"log"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var (
 	group errgroup.Group
 )
 
+func init() {
+	// 配置日志
+	//logFile, _ := os.Create("gochat.log")
+	//errorLogFile, _ := os.Create("gochat_error.log")
+	//DebugHandle = io.MultiWriter(logFile)
+	//TraceHandle = io.MultiWriter(logFile)
+	//InfoHandle = io.MultiWriter(logFile)
+	//WarnHandle = io.MultiWriter(logFile)
+	//ErrorHandle = io.MultiWriter(logFile)
+	//
+	//gin.DefaultWriter = io.MultiWriter(logFile)
+	//gin.DefaultErrorWriter = io.MultiWriter(errorLogFile)
+}
+
 func main() {
-	log.Println("当前运行环境:", gin.Mode())
 
 	serverInner := &http.Server{
 		Addr:         fmt.Sprintf(":%d", ChatConfig.InnerPort),
@@ -30,6 +42,8 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
+	Logger.Debug("当前运行环境:", gin.Mode())
+
 	group.Go(func() error {
 		return serverInner.ListenAndServe()
 	})
@@ -39,25 +53,7 @@ func main() {
 	})
 
 	if err := group.Wait(); err != nil {
-		log.Printf("run error: %+v\n", err)
+		Logger.Errorf("run error: %+v", err)
 	}
-
-	//var a int = 1
-	//var b *int = &a
-	//var c **int = &b
-	//var x int = *b
-	//fmt.Println("a = ", a)                       // a =  1
-	//fmt.Println("&a = ", &a)                     // &a =  0xc420080008
-	//fmt.Println("*&a = ", *&a)                   // *&a =  1
-	//fmt.Println("b = ", b)                       // b =  0xc420080008
-	//fmt.Println("&b = ", &b)                     // &b =  0xc42008a018
-	//fmt.Println("*&b = ", *&b)                   // *&b =  0xc420080008
-	//fmt.Println("*b = ", *b)                     // *b =  1
-	//fmt.Println("c = ", c)                       // c =  0xc42008a018
-	//fmt.Println("*c = ", *c)                     // *c =  0xc420080008
-	//fmt.Println("&c = ", &c)                     // &c =  0xc42008a020
-	//fmt.Println("*&c = ", *&c)                   // *&c =  0xc42008a018
-	//fmt.Println("**c = ", **c)                   // **c =  1
-	//fmt.Println("***&*&*&*&c = ", ***&*&*&*&*&c) // ***&*&*&*&c =  1
-	//fmt.Println("x = ", x)                       // x =  1
 }
+

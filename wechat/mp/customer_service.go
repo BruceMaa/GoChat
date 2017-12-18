@@ -4,24 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/BruceMaa/GoChat/wechat/common"
-	"os"
 )
 
 const (
-	GETKFLIST_CUSTOMERSERVICE_API               = `https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=%s`
-	GETONLINEKFLIST_CUSTOMERSERVICE_API         = `https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token=%s`
-	ADD_KFACCOUNT_CUSTOMERSERVICE_API           = `https://api.weixin.qq.com/customservice/kfaccount/add?access_token=%s`
-	INVITEWORKER_KFACCOUNT_CUSTOMERSERVICE_API  = `https://api.weixin.qq.com/customservice/kfaccount/inviteworker?access_token=%s`
-	UPDATE_KFACCOUNT_CUSTOMERSERVICE_API        = `https://api.weixin.qq.com/customservice/kfaccount/update?access_token=%s`
-	UPLOADHEADIMG_KFACCOUNT_CUSTOMERSERVICE_API = `http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=%s&kf_account=%s`
-	DEL_KFACCOUNT_CUSTOMERSERVICE_API           = `https://api.weixin.qq.com/customservice/kfaccount/del?access_token=%s`
+	GETKFLIST_CUSTOMERSERVICE_API               = `https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=%s`                    // 获取所有客服账号
+	GETONLINEKFLIST_CUSTOMERSERVICE_API         = `https://api.weixin.qq.com/cgi-bin/customservice/getonlinekflist?access_token=%s`              // 获取在线客服账号
+	ADD_KFACCOUNT_CUSTOMERSERVICE_API           = `https://api.weixin.qq.com/customservice/kfaccount/add?access_token=%s`                        // 添加客服帐号
+	INVITEWORKER_KFACCOUNT_CUSTOMERSERVICE_API  = `https://api.weixin.qq.com/customservice/kfaccount/inviteworker?access_token=%s`               // 邀请绑定客服帐号
+	UPDATE_KFACCOUNT_CUSTOMERSERVICE_API        = `https://api.weixin.qq.com/customservice/kfaccount/update?access_token=%s`                     // 设置客服信息
+	UPLOADHEADIMG_KFACCOUNT_CUSTOMERSERVICE_API = `http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=%s&kf_account=%s` // 上传客服头像
+	DEL_KFACCOUNT_CUSTOMERSERVICE_API           = `https://api.weixin.qq.com/customservice/kfaccount/del?access_token=%s`                        // 删除客服帐号
 
-	CREATE_KFSESSION_CUSTOMERSERVICE_API       = `https://api.weixin.qq.com/customservice/kfsession/create?access_token=%s`
-	CLOSE_KFSESSION_CUSTOMERSERVICE_API        = `https://api.weixin.qq.com/customservice/kfsession/close?access_token=%s`
-	GET_KFSESSION_CUSTOMERSERVICE_API          = `https://api.weixin.qq.com/customservice/kfsession/getsession?access_token=%s&openid=%s`
-	GET_KFSESSIONLIST_CUSTOMERSERVICE_API      = `https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token=%s&kf_account=%s`
-	GET_WAIT_KFSESSIONLIST_CUSTOMERSERVICE_API = `https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token=%s`
-	GET_MSGLIST_MSGRECORD_CUSTOMERSERVICE_API  = `https://api.weixin.qq.com/customservice/msgrecord/getmsglist?access_token=%s`
+	CREATE_KFSESSION_CUSTOMERSERVICE_API       = `https://api.weixin.qq.com/customservice/kfsession/create?access_token=%s`                       // 创建会话
+	CLOSE_KFSESSION_CUSTOMERSERVICE_API        = `https://api.weixin.qq.com/customservice/kfsession/close?access_token=%s`                        // 关闭会话
+	GET_KFSESSION_CUSTOMERSERVICE_API          = `https://api.weixin.qq.com/customservice/kfsession/getsession?access_token=%s&openid=%s`         // 获取客户会话状态
+	GET_KFSESSIONLIST_CUSTOMERSERVICE_API      = `https://api.weixin.qq.com/customservice/kfsession/getsessionlist?access_token=%s&kf_account=%s` // 获取客服会话列表
+	GET_WAIT_KFSESSIONLIST_CUSTOMERSERVICE_API = `https://api.weixin.qq.com/customservice/kfsession/getwaitcase?access_token=%s`                  // 获取未接入会话列表
+	GET_MSGLIST_MSGRECORD_CUSTOMERSERVICE_API  = `https://api.weixin.qq.com/customservice/msgrecord/getmsglist?access_token=%s`                   // 获取聊天记录
+
+	SEND_CUSTOM_MESSAGE_API = `https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s` // 客服接口-发消息
 )
 
 type (
@@ -94,16 +95,65 @@ type (
 	}
 )
 
+// 客服消息类型
+const (
+	CUSTOMER_MSG_TYPE_TEXT  = "text"
+	CUSTOMER_MSG_TYPE_IMAGE = "image"
+	CUSTOMER_MSG_TYPE_VOICE = "voice"
+	CUSTOMER_MSG_TYPE_VIDEO = "video"
+)
+
+type (
+	CustomerMessageRequest struct {
+		Touser          string `json:"touser"` // 普通用户openid
+		Msgtype         string `json:"msgtype"`
+		Customerservice struct {
+			KfAccount string `json:"kf_account"`
+		} `json:"customerservice,omitempty"` // 客服账号
+	}
+
+	CustomerTextMessageRequest struct {
+		CustomerMessageRequest
+		Text struct {
+			Content string `json:"content"` // 文本消息
+		} `json:"text"`
+	}
+
+	CustomerImageMessageRequest struct {
+		CustomerMessageRequest
+		Image struct {
+			MediaId string `json:"media_id"` // 图片消息
+		} `json:"image"`
+	}
+
+	CustomerVoiceMessageRequest struct {
+		CustomerMessageRequest
+		Voice struct {
+			MediaId string `json:"media_id"` // 语音消息
+		} `json:"voice"`
+	}
+
+	CustomerVideoMessageRequest struct {
+		CustomerMessageRequest
+		Video struct {
+			MediaId      string `json:"media_id"`
+			ThumbMediaId string `json:"thumb_media_id"`
+			Title        string `json:"title"`
+			Description  string `json:"description"`
+		} `json:"video"`
+	}
+)
+
 // 获取客服基本信息
 func (wm *WechatMp) GetKfList(accessToken string) (*CustomerServiceInfoList, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(GETKFLIST_CUSTOMERSERVICE_API, accessToken))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getkflist error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "getkflist error: %+v", err)
 		return nil, fmt.Errorf("getkflist error: %+v", err)
 	}
 	var customerServiceInfoList CustomerServiceInfoList
 	if err = json.Unmarshal([]byte(resp), &customerServiceInfoList); err != nil {
-		fmt.Fprintf(os.Stderr, "getkflist error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "getkflist error: %+v", err)
 		return nil, fmt.Errorf("getkflist error: %+v", err)
 	}
 	return &customerServiceInfoList, nil
@@ -113,12 +163,12 @@ func (wm *WechatMp) GetKfList(accessToken string) (*CustomerServiceInfoList, err
 func (wm *WechatMp) GetOnlineKfList(accessToken string) (*CustomerServiceInfoOnlineList, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(GETONLINEKFLIST_CUSTOMERSERVICE_API, accessToken))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "getonlinekflist error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "getonlinekflist error: %+v", err)
 		return nil, fmt.Errorf("getonlinekflist error: %+v", err)
 	}
 	var customerServiceInfoOnlineList CustomerServiceInfoOnlineList
 	if err = json.Unmarshal([]byte(resp), &customerServiceInfoOnlineList); err != nil {
-		fmt.Fprintf(os.Stderr, "getonlinekflist error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "getonlinekflist error: %+v", err)
 		return nil, fmt.Errorf("getonlinekflist error: %+v", err)
 	}
 	return &customerServiceInfoOnlineList, nil
@@ -128,12 +178,12 @@ func (wm *WechatMp) GetOnlineKfList(accessToken string) (*CustomerServiceInfoOnl
 func (wm *WechatMp) AddKfaccount(accessToken string, kfInfo *KfInfo) (*common.PublicError, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(ADD_KFACCOUNT_CUSTOMERSERVICE_API, accessToken), &kfInfo)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "add kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "add kfaccount error: %+v", err)
 		return nil, fmt.Errorf("add kfaccount error: %+v", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "add kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "add kfaccount error: %+v", err)
 		return nil, fmt.Errorf("add kfaccount error: %+v", err)
 	}
 	return &result, nil
@@ -143,12 +193,12 @@ func (wm *WechatMp) AddKfaccount(accessToken string, kfInfo *KfInfo) (*common.Pu
 func (wm *WechatMp) InviteKfaccount(accessToken string, kfInfo *KfInfo) (*common.PublicError, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(INVITEWORKER_KFACCOUNT_CUSTOMERSERVICE_API, accessToken), &kfInfo)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "invite kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "invite kfaccount error: %+v", err)
 		return nil, fmt.Errorf("invite kfaccount error: %+v", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "invite kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "invite kfaccount error: %+v", err)
 		return nil, fmt.Errorf("invite kfaccount error: %+v", err)
 	}
 	return &result, nil
@@ -158,12 +208,12 @@ func (wm *WechatMp) InviteKfaccount(accessToken string, kfInfo *KfInfo) (*common
 func (wm *WechatMp) UpdateKfaccount(accessToken string, kfInfo *KfInfo) (*common.PublicError, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(UPDATE_KFACCOUNT_CUSTOMERSERVICE_API, accessToken), &kfInfo)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "update kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "update kfaccount error: %+v", err)
 		return nil, fmt.Errorf("update kfaccount error: %+v", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "update kfaccount error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "update kfaccount error: %+v", err)
 		return nil, fmt.Errorf("update kfaccount error: %+v", err)
 	}
 	return &result, nil
@@ -179,12 +229,12 @@ func (wm *WechatMp) UploadheadimgKfaccount(accessToken string, kfInfo *KfInfo) (
 func (wm *WechatMp) DeleteKfaccount(accessToken string, kfInfo *KfInfo) (*common.PublicError, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(DEL_KFACCOUNT_CUSTOMERSERVICE_API, accessToken))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "delete kfaccount error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "delete kfaccount error: %+v\n", err)
 		return nil, fmt.Errorf("delete kfaccount error: %+v\n", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "delete kfaccount error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "delete kfaccount error: %+v\n", err)
 		return nil, fmt.Errorf("delete kfaccount error: %+v\n", err)
 	}
 	return &result, nil
@@ -194,12 +244,12 @@ func (wm *WechatMp) DeleteKfaccount(accessToken string, kfInfo *KfInfo) (*common
 func (wm *WechatMp) CreateKfsession(accessToken string, kfsession *Kfsession) (*common.PublicError, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(CREATE_KFSESSION_CUSTOMERSERVICE_API, accessToken), &kfsession)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "create kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "create kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("create kfsession error: %+v\n", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "create kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "create kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("create kfsession error: %+v\n", err)
 	}
 	return &result, nil
@@ -209,12 +259,12 @@ func (wm *WechatMp) CreateKfsession(accessToken string, kfsession *Kfsession) (*
 func (wm *WechatMp) CloseKfsession(accessToken string, kfsession *Kfsession) (*common.PublicError, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(CLOSE_KFSESSION_CUSTOMERSERVICE_API, accessToken), &kfsession)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "close kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "close kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("close kfsession error: %+v\n", err)
 	}
 	var result common.PublicError
 	if err = json.Unmarshal([]byte(resp), &result); err != nil {
-		fmt.Fprintf(os.Stderr, "close kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "close kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("close kfsession error: %+v\n", err)
 	}
 	return &result, nil
@@ -224,12 +274,12 @@ func (wm *WechatMp) CloseKfsession(accessToken string, kfsession *Kfsession) (*c
 func (wm *WechatMp) GetKfsession(accessToken, openid string) (*Kfsession, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(GET_KFSESSION_CUSTOMERSERVICE_API, accessToken, openid))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("get kfsession error: %+v\n", err)
 	}
 	var kfsession Kfsession
 	if err = json.Unmarshal([]byte(resp), &kfsession); err != nil {
-		fmt.Fprintf(os.Stderr, "get kfsession error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get kfsession error: %+v\n", err)
 		return nil, fmt.Errorf("get kfsession error: %+v\n", err)
 	}
 	return &kfsession, nil
@@ -239,12 +289,12 @@ func (wm *WechatMp) GetKfsession(accessToken, openid string) (*Kfsession, error)
 func (wm *WechatMp) GetKfsessionList(accessToken, kfAccount string) (*KfsessionList, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(GET_KFSESSIONLIST_CUSTOMERSERVICE_API, accessToken, kfAccount))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get kfsession list error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get kfsession list error: %+v\n", err)
 		return nil, fmt.Errorf("get kfsession list error: %+v\n", err)
 	}
 	var kfsessionList KfsessionList
 	if err = json.Unmarshal([]byte(resp), &kfsessionList); err != nil {
-		fmt.Fprintf(os.Stderr, "get kfsession list error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get kfsession list error: %+v\n", err)
 		return nil, fmt.Errorf("get kfsession list error: %+v\n", err)
 	}
 	return &kfsessionList, nil
@@ -254,12 +304,12 @@ func (wm *WechatMp) GetKfsessionList(accessToken, kfAccount string) (*KfsessionL
 func (wm *WechatMp) GetWaitcaseList(accessToken string) (*WaitcaseList, error) {
 	resp, err := common.HTTPGet(fmt.Sprintf(GET_WAIT_KFSESSIONLIST_CUSTOMERSERVICE_API, accessToken))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get waitcase list error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get waitcase list error: %+v", err)
 		return nil, fmt.Errorf("get waitcase list error: %+v", err)
 	}
 	var waitcaseList WaitcaseList
 	if err = json.Unmarshal([]byte(resp), &waitcaseList); err != nil {
-		fmt.Fprintf(os.Stderr, "get waitcase list error: %+v", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get waitcase list error: %+v", err)
 		return nil, fmt.Errorf("get waitcase list error: %+v", err)
 	}
 	return &waitcaseList, nil
@@ -269,13 +319,54 @@ func (wm *WechatMp) GetWaitcaseList(accessToken string) (*WaitcaseList, error) {
 func (wm *WechatMp) GetMsgrecordList(accessToken string, param *GetMsgListParam) (*GetMsgListResp, error) {
 	resp, err := common.HTTPPostJson(fmt.Sprintf(GET_MSGLIST_MSGRECORD_CUSTOMERSERVICE_API, accessToken), &param)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get msg record list error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get msg record list error: %+v\n", err)
 		return nil, fmt.Errorf("get msg record list error: %+v\n", err)
 	}
 	var getMsgListResp GetMsgListResp
 	if err = json.Unmarshal([]byte(resp), &getMsgListResp); err != nil {
-		fmt.Fprintf(os.Stderr, "get msg record list error: %+v\n", err)
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "get msg record list error: %+v\n", err)
 		return nil, fmt.Errorf("get msg record list error: %+v\n", err)
 	}
 	return &getMsgListResp, nil
+}
+
+// ********************************************发送消息********************************
+
+// 发送客服消息
+func (wm *WechatMp) SendCustomerMessage(accessToken string, message interface{}) (*common.PublicError, error) {
+	resp, err := common.HTTPPostJson(fmt.Sprintf(SEND_CUSTOM_MESSAGE_API, accessToken), &message)
+	if err != nil {
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "send custom message error: %+v\n", err)
+		return nil, fmt.Errorf("send custom message error: %+v\n", err)
+	}
+	var result common.PublicError
+	if err = json.Unmarshal([]byte(resp), &result); err != nil {
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "send custom message error: %+v\n", err)
+		return nil, fmt.Errorf("send custom message error: %+v\n", err)
+	}
+	return &result, nil
+}
+
+// 客服发送文本消息
+func (wm *WechatMp) SendCustomerTextMessage(accessToken string, textMessage *CustomerTextMessageRequest) (*common.PublicError, error) {
+	textMessage.Msgtype = CUSTOMER_MSG_TYPE_TEXT
+	return wm.SendCustomerMessage(accessToken, *textMessage)
+}
+
+// 客服发送图片消息
+func (wm *WechatMp) SendCustomerImageMessage(accessToken string, imageMessage *CustomerImageMessageRequest) (*common.PublicError, error) {
+	imageMessage.Msgtype = CUSTOMER_MSG_TYPE_IMAGE
+	return wm.SendCustomerMessage(accessToken, *imageMessage)
+}
+
+// 客服发送语音消息
+func (wm *WechatMp) SendCustomerVoiceMessage(accessToken string, voiceMessage *CustomerVoiceMessageRequest) (*common.PublicError, error) {
+	voiceMessage.Msgtype = CUSTOMER_MSG_TYPE_VOICE
+	return wm.SendCustomerMessage(accessToken, *voiceMessage)
+}
+
+// 客服发送视频消息
+func (wm *WechatMp) SendCustomerVideoMessage(accessToken string, videoMessage *CustomerVideoMessageRequest) (*common.PublicError, error) {
+	videoMessage.Msgtype = CUSTOMER_MSG_TYPE_VIDEO
+	return wm.SendCustomerMessage(accessToken, *videoMessage)
 }

@@ -1,62 +1,63 @@
 package mp
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 	"time"
 )
 
-var token string
-var wechatMp WechatMp
+var customer_service_token string
+var customer_service_wechatMp WechatMp
+
 func init() {
 	config := &WechatMpConfig{
-		AppId: "wx5fa42349ef54acfc",
+		AppId:     "wx5fa42349ef54acfc",
 		AppSecret: "4f1c8ee9007b9aa71bca7a542e659483",
-		Token: "bingobox",
+		Token:     "bingobox",
 	}
-	wechatMp.Configure = *config
-	accessToken, err := wechatMp.AccessToken()
+	customer_service_wechatMp.Configure = *config
+	accessToken, err := customer_service_wechatMp.AccessTokenFromWechat()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("%+v\n", accessToken)
-	token = accessToken.AccessToken
+	customer_service_token = accessToken.AccessToken
 }
 
 func TestWechatMp_GetKfList(t *testing.T) {
-	customerServiceInfoList, _ := wechatMp.GetKfList(token)
+	customerServiceInfoList, _ := customer_service_wechatMp.GetKfList(customer_service_token)
 	fmt.Printf("%+v\n", customerServiceInfoList)
 }
 
 func TestWechatMp_GetOnlineKfList(t *testing.T) {
-	customerServiceInfoOnlineList, _ := wechatMp.GetOnlineKfList(token)
+	customerServiceInfoOnlineList, _ := customer_service_wechatMp.GetOnlineKfList(customer_service_token)
 	fmt.Printf("%+v\n", customerServiceInfoOnlineList)
 }
 
 func TestWechatMp_AddKfaccount(t *testing.T) {
 	var kfInfo = &KfInfo{
 		KfAccount: "test1@test",
-		Nickname: "test1",
+		Nickname:  "test1",
 	}
-	result, _ := wechatMp.AddKfaccount(token, kfInfo)
+	result, _ := customer_service_wechatMp.AddKfaccount(customer_service_token, kfInfo)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_InviteKfaccount(t *testing.T) {
 	var kfInfo = &KfInfo{
 		KfAccount: "test1@test",
-		InviteWx: "test_kfwx",
+		InviteWx:  "test_kfwx",
 	}
-	result, _ := wechatMp.InviteKfaccount(token, kfInfo)
+	result, _ := customer_service_wechatMp.InviteKfaccount(customer_service_token, kfInfo)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_UpdateKfaccount(t *testing.T) {
 	var kfInfo = &KfInfo{
 		KfAccount: "test1@test",
-		Nickname: "客服1",
+		Nickname:  "客服1",
 	}
-	result, _ := wechatMp.UpdateKfaccount(token, kfInfo)
+	result, _ := customer_service_wechatMp.UpdateKfaccount(customer_service_token, kfInfo)
 	fmt.Printf("%+v\n", result)
 }
 
@@ -68,40 +69,40 @@ func TestWechatMp_DeleteKfaccount(t *testing.T) {
 	var kfInfo = &KfInfo{
 		KfAccount: "test1@test",
 	}
-	result, _ := wechatMp.DeleteKfaccount(token, kfInfo)
+	result, _ := customer_service_wechatMp.DeleteKfaccount(customer_service_token, kfInfo)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_CreateKfsession(t *testing.T) {
 	var kfsession = &Kfsession{
 		KfAccount: "test1@test",
-		Openid: "openid",
+		Openid:    "openid",
 	}
-	result, _ := wechatMp.CreateKfsession(token, kfsession)
+	result, _ := customer_service_wechatMp.CreateKfsession(customer_service_token, kfsession)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_CloseKfsession(t *testing.T) {
 	var kfsession = &Kfsession{
 		KfAccount: "test1@test",
-		Openid: "openid",
+		Openid:    "openid",
 	}
-	result, _ := wechatMp.CloseKfsession(token, kfsession)
+	result, _ := customer_service_wechatMp.CloseKfsession(customer_service_token, kfsession)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_GetKfsession(t *testing.T) {
-	kfsession, _ := wechatMp.GetKfsession(token, "openid")
+	kfsession, _ := customer_service_wechatMp.GetKfsession(customer_service_token, "openid")
 	fmt.Printf("%+v\n", kfsession)
 }
 
 func TestWechatMp_GetKfsessionList(t *testing.T) {
-	kfsessionList, _ := wechatMp.GetKfsessionList(token, "openid")
+	kfsessionList, _ := customer_service_wechatMp.GetKfsessionList(customer_service_token, "openid")
 	fmt.Printf("%+v\n", kfsessionList)
 }
 
 func TestWechatMp_GetWaitcaseList(t *testing.T) {
-	waitcaseList, _ := wechatMp.GetWaitcaseList(token)
+	waitcaseList, _ := customer_service_wechatMp.GetWaitcaseList(customer_service_token)
 	fmt.Printf("%+v\n", waitcaseList)
 }
 
@@ -111,10 +112,10 @@ func TestWechatMp_GetMsgrecordList(t *testing.T) {
 	endTime := time.Now().Add(after).Unix()
 	var param = &GetMsgListParam{
 		Starttime: startTime,
-		Endtime: endTime,
-		Msgid: 1,
-		Number: 10000,
+		Endtime:   endTime,
+		Msgid:     1,
+		Number:    10000,
 	}
-	getMsgListResp, _ := wechatMp.GetMsgrecordList(token, param)
+	getMsgListResp, _ := customer_service_wechatMp.GetMsgrecordList(customer_service_token, param)
 	fmt.Printf("%+v\n", getMsgListResp)
 }

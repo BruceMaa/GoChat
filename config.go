@@ -4,25 +4,25 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/BruceMaa/GoChat/wechat/mp"
 	"github.com/gin-gonic/gin"
 	"os"
 	"strings"
-	"github.com/BruceMaa/GoChat/wechat/mp"
 )
 
 type (
 	ServerConf struct {
-		Comment string `json:"comment"` // 配置文件说明
+		Comment  string      `json:"comment"` // 配置文件说明
 		ChatEnvs []AllConfig `json:"chat_envs"`
 	}
 	AllConfig struct {
-		Mode       string `json:"mode"` // 当前运行环境
+		Mode       string     `json:"mode"`        // 当前运行环境
 		ModeConfig ModeConfig `json:"mode_config"` // 当前运行环境的配置
 	}
 	ModeConfig struct {
-		Name         string `json:"name"` // 运行环境名称
-		OutterPort   int	`json:"outter_port"` // 运行时对外网端口
-		InnerPort    int	`json:"inner_port"` // 运行时对内网端口
+		Name         string       `json:"name"`          // 运行环境名称
+		OutterPort   int          `json:"outter_port"`   // 运行时对外网端口
+		InnerPort    int          `json:"inner_port"`    // 运行时对内网端口
 		WechatConfig WechatConfig `json:"wechat_config"` // 微信配置信息
 	}
 	WechatConfig struct {
@@ -41,8 +41,7 @@ var ChatConfig ModeConfig
 
 // 初始化命令行参数
 func init() {
-	//flag.StringVar(&configPath, "config", "/etc/bingobox/gochat.json", "config file of gochat")
-	flag.StringVar(&configPath, "config", "/Users/Bruce/GoPackage/src/github.com/BruceMaa/GoChat/gochat.json", "config file of gochat")
+	flag.StringVar(&configPath, "config", "/etc/bingobox/gochat.json", "config file of gochat")
 	flag.StringVar(&ginMode, "mode", gin.DebugMode, "run mode of gochat")
 	flag.Parse()
 

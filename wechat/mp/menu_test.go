@@ -1,25 +1,29 @@
 package mp
 
 import (
-	"testing"
 	"fmt"
-	"github.com/BruceMaa/GoChat/wechat/common"
+	"testing"
 )
 
-func TestWechatMp_CreateMenu(t *testing.T) {
+var menu_token string
+var menu_wechatMp WechatMp
+
+func init() {
 	config := &WechatMpConfig{
-		AppId: "wx5fa42349ef54acfc",
+		AppId:     "wx5fa42349ef54acfc",
 		AppSecret: "4f1c8ee9007b9aa71bca7a542e659483",
-		Token: "bingobox",
+		Token:     "bingobox",
 	}
-	wechatMp := &WechatMp{
-		Configure: *config,
-	}
-	accessToken, err := wechatMp.AccessToken()
+	menu_wechatMp.Configure = *config
+	accessToken, err := menu_wechatMp.AccessTokenFromWechat()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("%+v\n", accessToken)
+	menu_token = accessToken.AccessToken
+}
+
+func TestWechatMp_CreateMenu(t *testing.T) {
 
 	buttons := &Buttons{}
 
@@ -64,64 +68,28 @@ func TestWechatMp_CreateMenu(t *testing.T) {
 
 	fmt.Printf("%+v\n", buttons)
 
-	result, err := wechatMp.CreateMenu(accessToken.AccessToken, *buttons)
+	result, _ := menu_wechatMp.CreateMenu(menu_token, *buttons)
 	fmt.Printf("%+v\n", result)
 }
 
 func TestWechatMp_GetMenu(t *testing.T) {
-	config := &WechatMpConfig{
-		AppId: "wx5fa42349ef54acfc",
-		AppSecret: "4f1c8ee9007b9aa71bca7a542e659483",
-		Token: "bingobox",
-	}
-	wechatMp := &WechatMp{
-		Configure: *config,
-	}
-	accessToken, err := wechatMp.AccessToken()
+	accessToken, err := menu_wechatMp.AccessTokenFromWechat()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("%+v\n", accessToken)
 
-	menu, err := wechatMp.GetMenu(accessToken.AccessToken)
+	menu, err := menu_wechatMp.GetMenu(accessToken.AccessToken)
 	fmt.Printf("%+v\n", menu)
 }
 
 func TestWechatMp_DeleteMenu(t *testing.T) {
-	config := &WechatMpConfig{
-		AppId: "wx5fa42349ef54acfc",
-		AppSecret: "4f1c8ee9007b9aa71bca7a542e659483",
-		Token: "bingobox",
-	}
-	wechatMp := &WechatMp{
-		Configure: *config,
-	}
-	accessToken, err := wechatMp.AccessToken()
+	accessToken, err := menu_wechatMp.AccessTokenFromWechat()
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("%+v\n", accessToken)
 
-	result, err := wechatMp.DeleteMenu(accessToken.AccessToken)
+	result, err := menu_wechatMp.DeleteMenu(accessToken.AccessToken)
 	fmt.Printf("%+v\n", result)
-}
-
-func TestSelfmenu(t *testing.T) {
-	url := `https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=%s`
-	config := &WechatMpConfig{
-		AppId: "wx5fa42349ef54acfc",
-		AppSecret: "4f1c8ee9007b9aa71bca7a542e659483",
-		Token: "bingobox",
-	}
-	wechatMp := &WechatMp{
-		Configure: *config,
-	}
-	accessToken, err := wechatMp.AccessToken()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%+v\n", accessToken)
-
-	resp, err := common.HTTPGet(fmt.Sprintf(url, accessToken.AccessToken))
-	fmt.Printf("%s\n", string(resp))
 }

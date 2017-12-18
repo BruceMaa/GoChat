@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	GETCALLBACKIP_API = `https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s`
+	GETCALLBACKIP_API = `https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s` // 获取微信服务器IP地址
 )
 
 type CallBackIP struct {

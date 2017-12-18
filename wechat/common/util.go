@@ -1,11 +1,14 @@
 package common
 
 import (
-	"net/http"
-	"fmt"
-	"io/ioutil"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
+	"regexp"
 )
 
 // HTTP Get 请求
@@ -16,7 +19,7 @@ func HTTPGet(url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http get error: url=%v, statusCode=%v", url, resp.StatusCode)
+		return nil, fmt.Errorf("http get error: url=%v, statusCode=%v\n", url, resp.StatusCode)
 	}
 	return ioutil.ReadAll(resp.Body)
 }
@@ -40,22 +43,76 @@ func HTTPPostJson(url string, obj interface{}) ([]byte, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http POST Json error: url=%v, statusCode=%v", url, resp.StatusCode)
+		return nil, fmt.Errorf("http POST Json error: url=%v, statusCode=%v\n", url, resp.StatusCode)
 	}
 
 	return ioutil.ReadAll(resp.Body)
 }
 
-// HTTP Post 表单提交请求
-func HTTPPostForm(url string, params map[string][]string) ([]byte, error) {
-	resp, err := http.PostForm(url, params)
+// 文件上传结构体
+type MultipartFormFile struct {
+	FieldName string    // 文件入参名称
+	FileName  string    // 文件名称
+	Reader    io.Reader // 文件输入流
+}
+
+// HTTP POST form表单提交
+// url:文件上传访问路径
+// fields: 表单字段
+// files: 表单文件
+func HTTPPostForm(url string, fields map[string]string, files ...MultipartFormFile) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	writer := multipart.NewWriter(buf)
+	for key, val := range fields {
+		if err := writer.WriteField(key, val); err != nil {
+			return nil, err
+		}
+	}
+	for _, file := range files {
+		formFile, err := writer.CreateFormFile(file.FieldName, file.FileName)
+		if err != nil {
+			return nil, err
+		}
+
+		// 从文件读取数据，写入表单
+		if _, err = io.Copy(formFile, file.Reader); err != nil {
+			return nil, err
+		}
+	}
+
+	// 发送表单
+	contentType := writer.FormDataContentType()
+	// 发送之前必须调用Close()以写入结尾行
+	if err := writer.Close(); err != nil {
+		return nil, err
+	}
+	resp, err := http.Post(url, contentType, buf)
 	if err != nil {
 		return nil, err
 	}
-
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil , fmt.Errorf("http POST Form error: url=%v, statusCode=%v", url, resp.StatusCode)
-	}
 	return ioutil.ReadAll(resp.Body)
+}
+
+// 从微信消息中，提取MsgType
+func GetMsgTypeFromWechatMessage(message []byte) string {
+	regStr := `<MsgType><!\[CDATA\[(\w+)\]\]></MsgType>`
+	msgReg := regexp.MustCompile(regStr)
+	result := msgReg.FindSubmatch(message)
+	if len(result) < 2 {
+		// 没有找到匹配
+		return ""
+	}
+	return string(result[1])
+}
+
+// 从微信事件消息中，提取事件类型
+func GetMsgEventFromWechatMessage(message []byte) string {
+	regStr := `<Event><!\[CDATA\[(\w+)\]\]></Event>`
+	msgReg := regexp.MustCompile(regStr)
+	result := msgReg.FindSubmatch(message)
+	if len(result) < 2 {
+		// 没有找到匹配
+		return ""
+	}
+	return string(result[1])
 }
