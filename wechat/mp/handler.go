@@ -21,10 +21,13 @@ type (
 	AnnualRenewHandlerFunc                func(request *MsgEventAnnualRenew) string
 	VerifyExpireHandlerFunc               func(request *MsgEventVerifyExpired) string
 	SendTemplateFinishHandlerFunc         func(request *MsgEventTemplateSendFinish) string
-	//MsgTextHandlerFunc     func(wm *WechatMp, request *MsgRequest)
-	//MsgImageHandlerFunc    func(wm *WechatMp, request *MsgRequest)
-	//MsgVoiceHandlerFunc    func(wm *WechatMp, request *MsgRequest)
-	//MsgVideoHandlerFunc    func(wm *WechatMp, request *MsgRequest)
+	TextMessageHandlerFunc                func(request *TextMessage) string
+	ImageMessageHandlerFunc               func(request *ImageMessage) string
+	VoiceMessageHandlerFunc               func(request *VoiceMessage) string
+	VideoMessageHandlerFunc               func(request *VideoMessage) string
+	ShortVideoMessageHandlerFunc          func(request *ShortVideoMessage) string
+	LocationMessageHandlerFunc            func(request *LocationMessage) string
+	LinkMessageHandlerFunc                func(request *LinkMessage) string
 )
 
 // 默认获取微信accessToken的方法

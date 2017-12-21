@@ -244,6 +244,80 @@ type (
 	}
 )
 
+type (
+	TextMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // text
+		Content      string // 文本消息内容
+		MsgId        int64  // 消息id，64位整型
+	}
+
+	ImageMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // image
+		PicUrl       string // 图片链接（由系统生成）
+		MediaId      string // 图片消息媒体id，可以调用多媒体文件下载接口拉取数据。
+		MsgId        int64  // 消息id，64位整型
+	}
+
+	VoiceMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // voice
+		MediaId      string // 语音消息媒体id，可以调用多媒体文件下载接口拉取数据。
+		Format       string // 语音格式，如amr，speex等
+		MsgID        int64  // 消息id，64位整型
+	}
+
+	VideoMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // video
+		MediaId      string // 视频消息媒体id，可以调用多媒体文件下载接口拉取数据。
+		ThumbMediaId string // 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据。
+		MsgId        int64  // 消息id，64位整型
+	}
+
+	ShortVideoMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // shortvideo
+		MediaId      string // 视频消息媒体id，可以调用多媒体文件下载接口拉取数据。
+		ThumbMediaId string // 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据。
+		MsgId        int64  // 消息id，64位整型
+	}
+
+	LocationMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // shortvideo
+		Location_X   string // 地理位置维度
+		Location_Y   string // 地理位置经度
+		Scale        int    // 地图缩放大小
+		Label        string // 地理位置信息
+		MsgId        int64  // 消息id，64位整型
+	}
+
+	LinkMessage struct {
+		ToUserName   string // 开发者微信号
+		FromUserName string // 发送方帐号（一个OpenID）
+		CreateTime   int64  // 消息创建时间 （整型）
+		MsgType      string // link
+		Title        string // 消息标题
+		Description  string // 消息描述
+		Url          string // 消息链接
+		MsgId        int64  // 消息id，64位整型
+	}
+)
+
 // 处理微信消息
 func (wm *WechatMp) wechatMessageHandler(msg []byte) string {
 	fmt.Fprintf(common.WechatLoggerWriter, "WechatRequest: %s\n", msg)
@@ -255,18 +329,68 @@ func (wm *WechatMp) wechatMessageHandler(msg []byte) string {
 	case MSG_TYPE_EVENT:
 		response = wm.wechatEventMessageHandler(msg)
 	case MSG_TYPE_TEXT:
-		//wm.TextHandler(wm, msgRequest)
+		if wm.TextMessageHandler != nil {
+			var textMessage TextMessage
+			if err := xml.Unmarshal(msg, &textMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, textMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.TextMessageHandler(&textMessage)
+		}
 	case MSG_TYPE_IMG:
-		//wm.ImageHandler(wm, msgRequest)
+		if wm.ImageMessageHandler != nil {
+			var imageMessage ImageMessage
+			if err := xml.Unmarshal(msg, &imageMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, imageMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.ImageMessageHandler(&imageMessage)
+		}
 	case MSG_TYPE_VOICE:
-		//wm.VoiceHandler(wm, msgRequest)
+		if wm.VoiceMessageHandler != nil {
+			var voiceMessage VoiceMessage
+			if err := xml.Unmarshal(msg, &voiceMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, voiceMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.VoiceMessageHandler(&voiceMessage)
+		}
 	case MSG_TYPE_VIDEO:
-		//wm.VideoHandler(wm, msgRequest)
+		if wm.VideoMessageHandler != nil {
+			var videoMessage VideoMessage
+			if err := xml.Unmarshal(msg, &videoMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, videoMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.VideoMessageHandler(&videoMessage)
+		}
 	case MSG_TYPE_VIDEO_SHORT:
+		if wm.ShortVideoMessageHandler != nil {
+			var shortVideoMessage ShortVideoMessage
+			if err := xml.Unmarshal(msg, &shortVideoMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, shortVideoMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.ShortVideoMessageHandler(&shortVideoMessage)
+		}
 	case MSG_TYPE_LOCATION:
+		if wm.LocationMessageHandler != nil {
+			var locationMessage LocationMessage
+			if err := xml.Unmarshal(msg, &locationMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, locationMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.LocationMessageHandler(&locationMessage)
+		}
 	case MSG_TYPE_LINK:
-	case MSG_TYPE_MUSIC:
-	case MSG_TYPE_NEWS:
+		if wm.LinkMessageHandler != nil {
+			var linkMessage LinkMessage
+			if err := xml.Unmarshal(msg, &linkMessage); err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, linkMessage) error: %+v\n", msg, err)
+				return RESPONSE_STRING_FAIL
+			}
+			response = wm.LinkMessageHandler(&linkMessage)
+		}
 	default:
 		response = RESPONSE_STRING_SUCCESS
 	}

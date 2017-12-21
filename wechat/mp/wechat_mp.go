@@ -42,10 +42,13 @@ type (
 		AnnualRenewHandler                AnnualRenewHandlerFunc                // 年审通知的处理方法
 		VerifyExpiredHandler              VerifyExpireHandlerFunc               // 认证过期失效通知的处理方法
 		SendTemplateFinishHandler         SendTemplateFinishHandlerFunc         // 发送模板消息结果通知
-		//TextHandler        MsgTextHandlerFunc
-		//ImageHandler       MsgImageHandlerFunc
-		//VoiceHandler       MsgVoiceHandlerFunc
-		//VideoHandler       MsgVideoHandlerFunc
+		TextMessageHandler                TextMessageHandlerFunc                // 发送文本信息的处理方法
+		ImageMessageHandler               ImageMessageHandlerFunc               // 发送图片消息的处理方法
+		VoiceMessageHandler               VoiceMessageHandlerFunc               // 发送语言消息的处理方法
+		VideoMessageHandler               VideoMessageHandlerFunc               // 发送视频消息的处理方法
+		ShortVideoMessageHandler          ShortVideoMessageHandlerFunc          // 发送短视频消息的处理方法
+		LocationMessageHandler            LocationMessageHandlerFunc            // 上报地理位置的处理方法
+		LinkMessageHandler                LinkMessageHandlerFunc                // 发送链接消息的处理方法
 	}
 )
 
@@ -127,21 +130,21 @@ func (wm *WechatMp) SetMenuViewHandlerFunc(handlerFunc MenuViewHandlerFunc) {
 }
 
 // 设置处理微信text消息事件方法
-//func (wm *WechatMp) SetTextHandlerFunc(handlerFunc MsgTextHandlerFunc) {
-//	wm.TextHandler = handlerFunc
-//}
+func (wm *WechatMp) SetTextHandlerFunc(handlerFunc TextMessageHandlerFunc) {
+	wm.TextMessageHandler = handlerFunc
+}
 
 // 设置处理微信image消息事件方法
-//func (wm *WechatMp) SetImageHandlerFunc(handlerFunc MsgImageHandlerFunc) {
-//	wm.ImageHandler = handlerFunc
-//}
+func (wm *WechatMp) SetImageHandlerFunc(handlerFunc ImageMessageHandlerFunc) {
+	wm.ImageMessageHandler = handlerFunc
+}
 
 // 设置处理微信voice消息事件方法
-//func (wm *WechatMp) SetVoiceHandlerFunc(handlerFunc MsgVoiceHandlerFunc) {
-//	wm.VoiceHandler = handlerFunc
-//}
+func (wm *WechatMp) SetVoiceHandlerFunc(handlerFunc VoiceMessageHandlerFunc) {
+	wm.VoiceMessageHandler = handlerFunc
+}
 
 // 设置处理微信video消息事件方法
-//func (wm *WechatMp) SetVideoHandlerFunc(handlerFunc MsgVideoHandlerFunc) {
-//	wm.VideoHandler = handlerFunc
-//}
+func (wm *WechatMp) SetVideoHandlerFunc(handlerFunc VideoMessageHandlerFunc) {
+	wm.VideoMessageHandler = handlerFunc
+}
