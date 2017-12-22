@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/BruceMaa/GoChat/wechat/common"
 	"github.com/chanxuehong/wechat/json"
+	"time"
 )
 
 const (
@@ -165,82 +166,87 @@ type (
 	}
 )
 
+// 防止回复消息时，出现xml格式错误
+type CDATAText struct {
+	Text string `xml:",innerxml"`
+}
+
 type (
 	MsgTextResponse struct {
-		XMLName      xml.Name `xml:"xml"`
-		ToUserName   string   // 接收方帐号（收到的OpenID）
-		FromUserName string   // 开发者微信号
-		CreateTime   int64    // 消息创建时间 （整型）
-		MsgType      string   // text
-		Content      string   // 回复的消息内容（换行：在content中能够换行，微信客户端就支持换行显示）
+		XMLName      xml.Name  `xml:"xml"`
+		ToUserName   CDATAText // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText // 开发者微信号
+		CreateTime   int64     // 消息创建时间 （整型）
+		MsgType      CDATAText // text
+		Content      CDATAText // 回复的消息内容（换行：在content中能够换行，微信客户端就支持换行显示）
 	}
 
 	MsgImageResponse struct {
-		XMLName      xml.Name `xml:"xml"`
-		ToUserName   string   // 接收方帐号（收到的OpenID）
-		FromUserName string   // 开发者微信号
-		CreateTime   int64    // 消息创建时间 （整型）
-		MsgType      string   // image
+		XMLName      xml.Name  `xml:"xml"`
+		ToUserName   CDATAText // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText // 开发者微信号
+		CreateTime   int64     // 消息创建时间 （整型）
+		MsgType      CDATAText // image
 		Image        struct {
-			MediaId string // 通过素材管理中的接口上传多媒体文件，得到的id。
+			MediaId CDATAText // 通过素材管理中的接口上传多媒体文件，得到的id。
 		}
 	}
 
 	MsgVoiceResponse struct {
-		XMLName      xml.Name `xml:"xml"`
-		ToUserName   string   // 接收方帐号（收到的OpenID）
-		FromUserName string   // 开发者微信号
-		CreateTime   int64    // 消息创建时间戳 （整型）
-		MsgType      string   // 语音，voice
+		XMLName      xml.Name  `xml:"xml"`
+		ToUserName   CDATAText // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText // 开发者微信号
+		CreateTime   int64     // 消息创建时间戳 （整型）
+		MsgType      CDATAText // 语音，voice
 		Voice        struct {
-			MediaId string // 通过素材管理中的接口上传多媒体文件，得到的id
+			MediaId CDATAText // 通过素材管理中的接口上传多媒体文件，得到的id
 		}
 	}
 
 	MsgVideoResponse struct {
-		XMLName      xml.Name `xml:"xml"`
-		ToUserName   string   // 接收方帐号（收到的OpenID）
-		FromUserName string   // 开发者微信号
-		CreateTime   int64    // 消息创建时间 （整型）
-		MsgType      string   // video
+		XMLName      xml.Name  `xml:"xml"`
+		ToUserName   CDATAText // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText // 开发者微信号
+		CreateTime   int64     // 消息创建时间 （整型）
+		MsgType      CDATAText // video
 		Video        struct {
-			MediaId     string // 通过素材管理中的接口上传多媒体文件，得到的id
-			Title       string // 视频消息的标题
-			Description string // 视频消息的描述
+			MediaId     CDATAText // 通过素材管理中的接口上传多媒体文件，得到的id
+			Title       CDATAText // 视频消息的标题
+			Description CDATAText // 视频消息的描述
 		}
 	}
 
 	MsgMusicResponse struct {
-		XMLName      xml.Name `xml:"xml"`
-		ToUserName   string   // 接收方帐号（收到的OpenID）
-		FromUserName string   // 开发者微信号
-		CreateTime   int64    // 消息创建时间 （整型）
-		MsgType      string   // music
+		XMLName      xml.Name  `xml:"xml"`
+		ToUserName   CDATAText // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText // 开发者微信号
+		CreateTime   int64     // 消息创建时间 （整型）
+		MsgType      CDATAText // music
 		Music        struct {
-			Title        string // 音乐标题
-			Description  string // 音乐描述
-			MusicUrl     string // 音乐链接
-			HQMusicUrl   string // 高质量音乐链接，WIFI环境优先使用该链接播放音乐
-			ThumbMediaId string // 缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id
+			Title        CDATAText // 音乐标题
+			Description  CDATAText // 音乐描述
+			MusicUrl     CDATAText // 音乐链接
+			HQMusicUrl   CDATAText // 高质量音乐链接，WIFI环境优先使用该链接播放音乐
+			ThumbMediaId CDATAText // 缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id
 		}
 	}
 
 	MsgNewsResponse struct {
 		XMLName      xml.Name              `xml:"xml"`
-		ToUserName   string                // 接收方帐号（收到的OpenID）
-		FromUserName string                // 开发者微信号
+		ToUserName   CDATAText             // 接收方帐号（收到的OpenID）
+		FromUserName CDATAText             // 开发者微信号
 		CreateTime   int64                 // 消息创建时间 （整型）
-		MsgType      string                // news
+		MsgType      CDATAText             // news
 		ArticleCount int                   // 图文消息个数，限制为8条以内
 		Articles     []MsgNewsItemResponse // 多条图文消息信息，默认第一个item为大图,注意，如果图文数超过8，则将会无响应
 	}
 
 	MsgNewsItemResponse struct {
-		XMLName     xml.Name `xml:"item"`
-		Title       string   // 图文消息标题
-		Description string   // 图文消息描述
-		PicUrl      string   // 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
-		Url         string   // 点击图文消息跳转链接
+		XMLName     xml.Name  `xml:"item"`
+		Title       CDATAText // 图文消息标题
+		Description CDATAText // 图文消息描述
+		PicUrl      CDATAText // 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
+		Url         CDATAText // 点击图文消息跳转链接
 	}
 )
 
@@ -317,6 +323,214 @@ type (
 		MsgId        int64  // 消息id，64位整型
 	}
 )
+
+// 处理数据结构，xml字段
+func Value2CDATA(v string) CDATAText {
+	return CDATAText{"<![CDATA[" + v + "]]>"}
+}
+
+// 新建一个文本回复信息，返回结构格式
+func NewMsgTextResponse(ToUserName, FromUserName, Content string) *MsgTextResponse {
+	textResp := &MsgTextResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	textResp.MsgType = Value2CDATA(MSG_TYPE_TEXT)
+	textResp.ToUserName = Value2CDATA(ToUserName)
+	textResp.FromUserName = Value2CDATA(FromUserName)
+	textResp.Content = Value2CDATA(Content)
+	return textResp
+}
+
+// 新建一个文本回复信息，返回二进制数组格式
+func NewMsgTextResponseByte(ToUserName, FromUserName, Content string) ([]byte, error) {
+	textResp := NewMsgTextResponse(ToUserName, FromUserName, Content)
+	textRespByte, err := xml.Marshal(textResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgTextResponseByte xml.Marshal(textResp) error: %+v\n", err)
+	}
+	return textRespByte, nil
+}
+
+// 新建一个文本回复信息，返回字符串格式
+func NewMsgTextResponseString(ToUserName, FromUserName, Content string) (string, error) {
+	textRespByte, err := NewMsgTextResponseByte(ToUserName, FromUserName, Content)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgTextResponseString error: %+v\n", err)
+	}
+	return string(textRespByte), nil
+}
+
+// 新建一个图片回复信息，返回结构格式
+func NewMsgImageResponse(ToUserName, FromUserName, MediaId string) *MsgImageResponse {
+	imageResp := &MsgImageResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	imageResp.MsgType = Value2CDATA(MSG_TYPE_IMG)
+	imageResp.ToUserName = Value2CDATA(ToUserName)
+	imageResp.FromUserName = Value2CDATA(FromUserName)
+	imageResp.Image.MediaId = Value2CDATA(MediaId)
+	return imageResp
+}
+
+// 新建一个图片回复信息，返回二进制数组格式
+func NewMsgImageResponseByte(ToUserName, FromUserName, MediaId string) ([]byte, error) {
+	imageResp := NewMsgImageResponse(ToUserName, FromUserName, MediaId)
+	imageRespByte, err := xml.Marshal(imageResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgImageResponseByte xml.Marshal(imageResp) error: %+v\n", err)
+	}
+	return imageRespByte, nil
+}
+
+// 新建一个图片回复信息，返回字符串格式
+func NewMsgImageResponseString(ToUserName, FromUserName, MediaId string) (string, error) {
+	imageRespByte, err := NewMsgImageResponseByte(ToUserName, FromUserName, MediaId)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgImageResponseString error: %+v\n", err)
+	}
+	return string(imageRespByte), nil
+}
+
+// 新建一个语音回复信息，返回结构格式
+func NewMsgVoiceResponse(ToUserName, FromUserName, MediaId string) *MsgVoiceResponse {
+	voiceResp := &MsgVoiceResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	voiceResp.MsgType = Value2CDATA(MSG_TYPE_VOICE)
+	voiceResp.ToUserName = Value2CDATA(ToUserName)
+	voiceResp.FromUserName = Value2CDATA(FromUserName)
+	voiceResp.Voice.MediaId = Value2CDATA(MediaId)
+	return voiceResp
+}
+
+// 新建一个语音回复信息，返回二进制数组格式
+func NewMsgVoiceResponseByte(ToUserName, FromUserName, MediaId string) ([]byte, error) {
+	voiceResp := NewMsgVoiceResponse(ToUserName, FromUserName, MediaId)
+	voiceRespByte, err := xml.Marshal(voiceResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgVoiceResponseByte xml.Marshal(voiceResp) error: %+v\n", err)
+	}
+	return voiceRespByte, nil
+}
+
+// 新建一个语音回复信息，返回字符串格式
+func NewMsgVoiceResponseString(ToUserName, FromUserName, MediaId string) (string, error) {
+	voiceRespByte, err := NewMsgVoiceResponseByte(ToUserName, FromUserName, MediaId)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgVoiceResponseString error: %+v\n", err)
+	}
+	return string(voiceRespByte), nil
+}
+
+// 新建一个视频回复信息，返回结构格式
+func NewMsgVideoResponse(ToUserName, FromUserName, MediaId, Title, Description string) *MsgVideoResponse {
+	videoResp := &MsgVideoResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	videoResp.MsgType = Value2CDATA(MSG_TYPE_VIDEO)
+	videoResp.ToUserName = Value2CDATA(ToUserName)
+	videoResp.FromUserName = Value2CDATA(FromUserName)
+	videoResp.Video.MediaId = Value2CDATA(MediaId)
+	videoResp.Video.Title = Value2CDATA(Title)
+	videoResp.Video.Description = Value2CDATA(Description)
+	return videoResp
+}
+
+// 新建一个视频回复信息，返回二进制数组格式
+func NewMsgVideoResponseByte(ToUserName, FromUserName, MediaId, Title, Description string) ([]byte, error) {
+	videoResp := NewMsgVideoResponse(ToUserName, FromUserName, MediaId, Title, Description)
+	videoRespByte, err := xml.Marshal(videoResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgVideoResponseByte xml.Marshal(videoResp) error: %+v\n", err)
+	}
+	return videoRespByte, nil
+}
+
+// 新建一个视频回复信息，返回字符串格式
+func NewMsgVideoResponseString(ToUserName, FromUserName, MediaId, Title, Description string) (string, error) {
+	videoRespByte, err := NewMsgVideoResponseByte(ToUserName, FromUserName, MediaId, Title, Description)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgVideoResponseString error: %+v\n", err)
+	}
+	return string(videoRespByte), nil
+}
+
+// 新建一个音乐回复信息，返回结构格式
+func NewMsgMusicResponse(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl string) *MsgMusicResponse {
+	musicResp := &MsgMusicResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	musicResp.MsgType = Value2CDATA(MSG_TYPE_MUSIC)
+	musicResp.ToUserName = Value2CDATA(ToUserName)
+	musicResp.FromUserName = Value2CDATA(FromUserName)
+	musicResp.Music.Title = Value2CDATA(Title)
+	musicResp.Music.Description = Value2CDATA(Description)
+	musicResp.Music.ThumbMediaId = Value2CDATA(ThumbMediaId)
+	musicResp.Music.MusicUrl = Value2CDATA(MusicUrl)
+	musicResp.Music.HQMusicUrl = Value2CDATA(HQMusicUrl)
+	return musicResp
+}
+
+// 新建一个音乐回复信息，返回二进制数组格式
+func NewMsgMusicResponseByte(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl string) ([]byte, error) {
+	musicResp := NewMsgMusicResponse(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl)
+	musicRespByte, err := xml.Marshal(musicResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgMusicResponseByte xml.Marshal(musicResp) error: %+v\n", err)
+	}
+	return musicRespByte, nil
+}
+
+// 新建一个音乐回复信息，返回字符串格式
+func NewMsgMusicResponseString(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl string) (string, error) {
+	musicRespByte, err := NewMsgMusicResponseByte(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgMusicResponseString error: %+v\n", err)
+	}
+	return string(musicRespByte), nil
+}
+
+// 新建一条图文消息，多个图文结构可以组成一个图文信息, 8条以内
+func NewMsgNewsItemResponse(Title, Description, PicUrl, Url string) *MsgNewsItemResponse {
+	newsItemResp := &MsgNewsItemResponse{}
+	newsItemResp.Title = Value2CDATA(Title)
+	newsItemResp.Description = Value2CDATA(Description)
+	newsItemResp.PicUrl = Value2CDATA(PicUrl)
+	newsItemResp.Url = Value2CDATA(Url)
+	return newsItemResp
+}
+
+// 新建一个图文回复信息，返回结构格式，items 个数限制为8条以内
+func NewMsgNewsResponse(ToUserName, FromUserName string, items []MsgNewsItemResponse) *MsgNewsResponse {
+	newsResp := &MsgNewsResponse{
+		CreateTime: time.Now().Unix(),
+	}
+	newsResp.MsgType = Value2CDATA(MSG_TYPE_NEWS)
+	newsResp.ToUserName = Value2CDATA(ToUserName)
+	newsResp.FromUserName = Value2CDATA(FromUserName)
+	newsResp.ArticleCount = len(items)
+	newsResp.Articles = items
+	return newsResp
+}
+
+// 新建一个图文回复信息，返回二进制数组格式
+func NewMsgNewsResponseByte(ToUserName, FromUserName string, items []MsgNewsItemResponse) ([]byte, error) {
+	newsResp := NewMsgNewsResponse(ToUserName, FromUserName, items)
+	newsRespByte, err := xml.Marshal(newsResp)
+	if err != nil {
+		return nil, fmt.Errorf("NewMsgNewsResponseByte xml.Marshal(newsResp) error: %+v\n", err)
+	}
+	return newsRespByte, nil
+}
+
+// 新建一个图文回复信息，返回字符串格式
+func NewMsgNewsResponseString(ToUserName, FromUserName string, items []MsgNewsItemResponse) (string, error) {
+	newsRespByte, err := NewMsgNewsResponseByte(ToUserName, FromUserName, items)
+	if err != nil {
+		return "", fmt.Errorf("NewMsgNewsResponseString error: %+v\n", err)
+	}
+	return string(newsRespByte), nil
+}
 
 // 处理微信消息
 func (wm *WechatMp) wechatMessageHandler(msg []byte) string {

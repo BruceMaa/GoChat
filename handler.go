@@ -1,13 +1,11 @@
 package main
 
 import (
-	"encoding/xml"
 	"fmt"
 	"github.com/BruceMaa/GoChat/wechat/mp"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 // 初始化配置微信
@@ -49,98 +47,64 @@ func wechatMpServer(router *gin.Engine) {
 }
 
 func WechatMpMsgEventSubscribeHandler(subscribeMessage *mp.MsgEventSubscribe) string {
-	fmt.Printf("WechatMpMsgEventSubscribeHandler: %+v\n", subscribeMessage)
-	msgTextResponse := &mp.MsgTextResponse{
-		ToUserName:   subscribeMessage.FromUserName,
-		FromUserName: subscribeMessage.ToUserName,
-		CreateTime:   time.Now().Unix(),
-		MsgType:      mp.MSG_TYPE_TEXT,
-		Content:      "谢谢关注",
-	}
-	data, err := xml.Marshal(msgTextResponse)
+	fmt.Printf("WechatMpMsgEventSubscribeHandler subscribeMessage: %+v\n", subscribeMessage)
+	textRespStr, err := mp.NewMsgTextResponseString(subscribeMessage.FromUserName, subscribeMessage.ToUserName, "谢谢关注")
 	if err != nil {
-		fmt.Printf("msgTextResponse xml.Marshal error: %+v\n", err)
+		fmt.Printf("msgTextResponse error: %+v\n", err)
 		return ""
 	}
-	fmt.Printf("msgTextResponse: %s", data)
-	return string(data)
+	fmt.Printf("WechatMpMsgEventSubscribeHandler textRespStr: %s\n", textRespStr)
+	return textRespStr
 }
 
 func WechatMpMsgEventUnSubscribeHandler(unSubscribeMessage *mp.MsgEventSubscribe) string {
-	fmt.Printf("WechatMpMsgEventUnSubscribeHandler: %+v\n", unSubscribeMessage)
+	fmt.Printf("WechatMpMsgEventUnSubscribeHandler unSubscribeMessage: %+v\n", unSubscribeMessage)
 	return ""
 }
 
 func WechatMpMsgEventScanHandler(scanMessage *mp.MsgEventScan) string {
-	fmt.Printf("WechatMpMsgEventScanHandler: %+v\n", scanMessage)
-	msgTextResponse := &mp.MsgTextResponse{
-		ToUserName:   scanMessage.FromUserName,
-		FromUserName: scanMessage.ToUserName,
-		CreateTime:   time.Now().Unix(),
-		MsgType:      mp.MSG_TYPE_TEXT,
-		Content:      "扫码事件",
-	}
-	data, err := xml.Marshal(msgTextResponse)
+	fmt.Printf("WechatMpMsgEventScanHandler scanMessage: %+v\n", scanMessage)
+	textRespStr, err := mp.NewMsgTextResponseString(scanMessage.FromUserName, scanMessage.ToUserName, "扫码事件")
 	if err != nil {
-		fmt.Printf("msgTextResponse xml.Marshal error: %+v\n", err)
+		fmt.Printf("msgTextResponse error: %+v\n", err)
 		return ""
 	}
-	fmt.Printf("msgTextResponse: %s", data)
-	return string(data)
+	fmt.Printf("WechatMpMsgEventScanHandler textRespStr: %s\n", textRespStr)
+	return textRespStr
 }
 
 func WechatMpMsgEventLocationHandler(locationMessage *mp.MsgEventLocation) string {
-	fmt.Printf("WechatMpMsgEventLocationHandler: %+v\n", locationMessage)
-	msgTextResponse := &mp.MsgTextResponse{
-		ToUserName:   locationMessage.FromUserName,
-		FromUserName: locationMessage.ToUserName,
-		CreateTime:   time.Now().Unix(),
-		MsgType:      mp.MSG_TYPE_TEXT,
-		Content:      "上报地理位置事件，\n纬度：" + locationMessage.Latitude + "\n经度：" + locationMessage.Longitude + "\n精度：" + locationMessage.Precision,
-	}
-	data, err := xml.Marshal(msgTextResponse)
+	fmt.Printf("WechatMpMsgEventLocationHandler locationMessage: %+v\n", locationMessage)
+	content := "上报地理位置事件，\n纬度：" + locationMessage.Latitude + "\n经度：" + locationMessage.Longitude + "\n精度：" + locationMessage.Precision
+	textRespStr, err := mp.NewMsgTextResponseString(locationMessage.FromUserName, locationMessage.ToUserName, content)
 	if err != nil {
-		fmt.Printf("msgTextResponse xml.Marshal error: %+v\n", err)
+		fmt.Printf("msgTextResponse error: %+v\n", err)
 		return ""
 	}
-	fmt.Printf("msgTextResponse: %s", data)
-	return string(data)
+	fmt.Printf("WechatMpMsgEventLocationHandler textRespStr: %s\n", textRespStr)
+	return textRespStr
 }
 
 func WechatMpMsgEventMenuClickHandler(menuClickMessage *mp.MsgEventMenuClick) string {
-	fmt.Printf("WechatMpMsgEventMenuClickHandler: %+v\n", menuClickMessage)
-	msgTextResponse := &mp.MsgTextResponse{
-		ToUserName:   menuClickMessage.FromUserName,
-		FromUserName: menuClickMessage.ToUserName,
-		CreateTime:   time.Now().Unix(),
-		MsgType:      mp.MSG_TYPE_TEXT,
-		Content:      "菜单点击事件: " + menuClickMessage.EventKey,
-	}
-	data, err := xml.Marshal(msgTextResponse)
+	fmt.Printf("WechatMpMsgEventMenuClickHandler menuClickMessage: %+v\n", menuClickMessage)
+	textRespStr, err := mp.NewMsgTextResponseString(menuClickMessage.FromUserName, menuClickMessage.ToUserName, "菜单点击事件: "+menuClickMessage.EventKey)
 	if err != nil {
-		fmt.Printf("msgTextResponse xml.Marshal error: %+v\n", err)
+		fmt.Printf("msgTextResponse error: %+v\n", err)
 		return ""
 	}
-	fmt.Printf("msgTextResponse: %s", data)
-	return string(data)
+	fmt.Printf("WechatMpMsgEventMenuClickHandler textRespStr: %s\n", textRespStr)
+	return textRespStr
 }
 
 func WechatMpMsgEventMenuViewHandler(menuViewMessage *mp.MsgEventMenuView) string {
-	fmt.Printf("WechatMpMsgEventMenuViewHandler: %+v\n", menuViewMessage)
-	msgTextResponse := &mp.MsgTextResponse{
-		ToUserName:   menuViewMessage.FromUserName,
-		FromUserName: menuViewMessage.ToUserName,
-		CreateTime:   time.Now().Unix(),
-		MsgType:      mp.MSG_TYPE_TEXT,
-		Content:      "菜单外链事件: " + menuViewMessage.EventKey,
-	}
-	data, err := xml.Marshal(msgTextResponse)
+	fmt.Printf("WechatMpMsgEventMenuViewHandler menuViewMessage: %+v\n", menuViewMessage)
+	textRespStr, err := mp.NewMsgTextResponseString(menuViewMessage.FromUserName, menuViewMessage.ToUserName, "菜单外链事件: "+menuViewMessage.EventKey)
 	if err != nil {
-		fmt.Printf("msgTextResponse xml.Marshal error: %+v\n", err)
+		fmt.Printf("msgTextResponse error: %+v\n", err)
 		return ""
 	}
-	fmt.Printf("msgTextResponse: %s", data)
-	return string(data)
+	fmt.Printf("WechatMpMsgEventMenuViewHandler textRespStr: %s\n", textRespStr)
+	return textRespStr
 }
 
 // 设置对内网API路由

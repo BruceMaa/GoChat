@@ -1,6 +1,10 @@
 package mp
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/xml"
 	"fmt"
 	"github.com/BruceMaa/GoChat/wechat/common"
 	"io/ioutil"
@@ -8,6 +12,13 @@ import (
 )
 
 const (
+	WECHAT_REQUEST_ECHOSTR       = "echostr"       // 微信认证服务器请求参数:返回字符串
+	WECHAT_REQUEST_TIMESTAMP     = "timestamp"     // 微信服务器请求参数：时间戳
+	WECHAT_REQUEST_NONCE         = "nonce"         // 微信服务器请求参数：随机字符串
+	WECHAT_REQUEST_SIGNATURE     = "signature"     // 微信服务器请求参数：签名字符串
+	WECHAT_REQUEST_ENCRYPT_TYPE  = "encrypt_type"  // 微信服务器请求参数：加密方式
+	WECHAT_REQUEST_MSG_SIGNATURE = "msg_signature" // 微信服务器请求参数：消息签名字符串
+
 	RESPONSE_STRING_SUCCESS = "success"
 	RESPONSE_STRING_FAIL    = "fail"
 	RESPONSE_STRING_INVALID = "invalid wechat server"
@@ -15,6 +26,8 @@ const (
 	WECHAT_LANGUAGE_ZH_CN = "zh_CH" // 微信语言，简体中文
 	WECHAT_LANGUAGE_ZH_TW = "zh_TW" // 微信语言，繁体中文
 	WECHAT_LANGUAGE_EN    = "en"    // 微信语言，英文
+
+	WECHAT_ENCRYPT_TYPE = "aes" // 微信消息加密方式
 )
 
 type (
@@ -62,36 +75,127 @@ func New(wechatMpConfig *WechatMpConfig) *WechatMp {
 
 // 用户在设置微信公众号服务器配置，并开启后，微信会发送一次认证请求，此函数即做此验证用
 func (wm *WechatMp) AuthWechatServer(r *http.Request) string {
-	echostr := r.FormValue("echostr")
+	echostr := r.FormValue(WECHAT_REQUEST_ECHOSTR)
 	if wm.checkWechatSource(r) {
 		return echostr
 	}
 	return RESPONSE_STRING_INVALID
 }
 
-// 获取微信公众号的认证echo信息
+// 检验认证来源是否为微信
 func (wm *WechatMp) checkWechatSource(r *http.Request) bool {
-	signature := r.FormValue("signature")
-	timestamp := r.FormValue("timestamp")
-	nonce := r.FormValue("nonce")
+	timestamp := r.FormValue(WECHAT_REQUEST_TIMESTAMP)
+	nonce := r.FormValue(WECHAT_REQUEST_NONCE)
+	signature := r.FormValue(WECHAT_REQUEST_SIGNATURE)
 	return CheckWechatAuthSign(signature, wm.Configure.Token, timestamp, nonce)
+}
+
+// 检验消息来源，并且提取消息
+func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
+	//openid := r.FormValue("openid") // openid，暂时还没想到为什么传值过来
+	timestamp := r.FormValue(WECHAT_REQUEST_TIMESTAMP)
+	nonce := r.FormValue(WECHAT_REQUEST_NONCE)
+
+	// 读取request body
+	body, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource ioutil.ReadAll(r.Body) error: %+v\n", err)
+		return false, nil
+	}
+	// 判断消息是否经过加密
+	encrypt_type := r.FormValue(WECHAT_REQUEST_ENCRYPT_TYPE)
+	if encrypt_type == WECHAT_ENCRYPT_TYPE {
+		// 如果消息已经加密
+		msg_signature := r.FormValue(WECHAT_REQUEST_MSG_SIGNATURE)
+		var msgEncryptBody MsgEncryptBody
+		if err = xml.Unmarshal(body, &msgEncryptBody); err != nil {
+			fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource xml.Unmarshal(body, &msgEncryptBody) error: %+v\n", err)
+			return false, nil
+		}
+		check := CheckWechatAuthSign(msg_signature, timestamp, nonce, wm.Configure.Token, msgEncryptBody.Encrypt)
+		var message []byte
+		if check {
+			// 验证成功，解密消息，返回正文的二进制数组格式
+			message, err = wm.aesDecryptMessage(msgEncryptBody.Encrypt)
+			if err != nil {
+				fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource wm.aesDecryptMessage(msgEncryptBody.Encrypt) error: %+v\n", err)
+				return false, nil
+			}
+		}
+
+		return check, message
+	}
+	// 如果消息未加密
+	signature := r.FormValue(WECHAT_REQUEST_SIGNATURE)
+	return CheckWechatAuthSign(signature, wm.Configure.Token, timestamp, nonce), body
+}
+
+// 加密后的微信消息结构
+type MsgEncryptBody struct {
+	XMLName    xml.Name `xml:"xml"`
+	ToUserName string
+	Encrypt    string
+}
+
+// 加密发送消息
+func (wm *WechatMp) aesEncryptMessage() {
+
+}
+
+// 解密收到的消息
+func (wm *WechatMp) aesDecryptMessage(cipherMessage string) ([]byte, error) {
+	// 先将密钥以及加密数据，做base64解码
+	// = 为占位符
+	aesKey, err := base64.StdEncoding.DecodeString(wm.Configure.EncodingAESKey + "=")
+	if err != nil {
+		return nil, fmt.Errorf("aesDecryptMessage base64 decode EncodingAESKey error: %+v\n", err)
+	}
+	message, err := base64.StdEncoding.DecodeString(cipherMessage)
+	if err != nil {
+		return nil, fmt.Errorf("aesDecryptMessage base64 decode encryptMessage error: %+v\n", err)
+	}
+	message, err = AESDecrypt(message, aesKey)
+	if err != nil {
+		return nil, fmt.Errorf("aesDecryptMessage AESDecrypt error: %+v\n", err)
+	}
+
+	// 解密完成后，提取正文
+	return wm.extractDecryptMessage(message)
+}
+
+// 从解密后的消息中，提取正文msg
+// msg_encrypt = Base64_Encode(AES_Encrypt[random(16B) + msg_len(4B) + msg + $AppID])
+func (wm *WechatMp) extractDecryptMessage(plainData []byte) ([]byte, error) {
+	// 前16位是随机字符, 直接跳过，17至20是正文的长度，先读取正文的长度
+	buf := bytes.NewBuffer(plainData[16:20])
+	var msgLength int32
+	err := binary.Read(buf, binary.BigEndian, &msgLength)
+	if err != nil {
+		return nil, fmt.Errorf("extractDecryptMessage binary.Read(msgLength) error: %+v\n", err)
+	}
+
+	// 正文之后是appid， 可以再次验证，计算appid的起始位置
+	appIdStart := msgLength + 20
+	// 获取appid,并进行验证
+	appId := string(plainData[appIdStart:])
+	if wm.Configure.AppId != appId {
+		// 验证消息中的appid未通过
+		return nil, fmt.Errorf("local appid (%s) is not equal of message appid (%s)\n", wm.Configure.AppId, appId)
+	}
+
+	return plainData[20:appIdStart], nil
 }
 
 // 微信服务推送消息接收方法
 func (wm *WechatMp) CallBackFunc(r *http.Request) string {
 	// 首先，验证消息是否从微信服务发出
-	valid := wm.checkWechatSource(r)
+	valid, body := wm.checkMessageSource(r)
 	if !valid {
 		fmt.Fprintln(common.WechatErrorLoggerWriter, RESPONSE_STRING_INVALID)
 		return RESPONSE_STRING_FAIL
 	}
-	data, err := ioutil.ReadAll(r.Body)
-	defer r.Body.Close()
-	if err != nil {
-		fmt.Fprintf(common.WechatErrorLoggerWriter, "WechatRequest ioutil.ReadAll(body) error: %+v\n", err)
-		return RESPONSE_STRING_FAIL
-	}
-	return wm.wechatMessageHandler(data)
+	return wm.wechatMessageHandler(body)
 }
 
 // 设置全局获取微信accessToken的方法
