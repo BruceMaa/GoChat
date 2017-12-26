@@ -2,7 +2,7 @@ package mp
 
 import (
 	"fmt"
-	"github.com/BruceMaa/GoChat/wechat/common"
+	"github.com/BruceMaa/Panda/wechat/common"
 	"github.com/chanxuehong/wechat/json"
 )
 

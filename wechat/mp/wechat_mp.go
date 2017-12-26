@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/xml"
 	"fmt"
-	"github.com/BruceMaa/GoChat/wechat/common"
+	"github.com/BruceMaa/Panda/wechat/common"
 	"io/ioutil"
 	"net/http"
 	"strconv"

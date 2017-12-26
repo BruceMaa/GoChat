@@ -3,7 +3,7 @@ package mp
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/BruceMaa/GoChat/wechat/common"
+	"github.com/BruceMaa/Panda/wechat/common"
 )
 
 const (
