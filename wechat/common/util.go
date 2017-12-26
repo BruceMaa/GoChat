@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"math/rand"
 	"mime/multipart"
 	"net/http"
 	"regexp"
+	"time"
 )
 
 // HTTP Get 请求
@@ -115,4 +117,16 @@ func GetMsgEventFromWechatMessage(message []byte) string {
 		return ""
 	}
 	return string(result[1])
+}
+
+//获取随机字节数组
+func GetRandomString(length int) []byte {
+	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	nonce := []byte(str)
+	var result []byte
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, nonce[r.Intn(len(nonce))])
+	}
+	return result
 }

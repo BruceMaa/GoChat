@@ -9,6 +9,8 @@ import (
 	"github.com/BruceMaa/GoChat/wechat/common"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 )
 
 const (
@@ -108,16 +110,16 @@ func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
 	if encrypt_type == WECHAT_ENCRYPT_TYPE {
 		// 如果消息已经加密
 		msg_signature := r.FormValue(WECHAT_REQUEST_MSG_SIGNATURE)
-		var msgEncryptBody MsgEncryptBody
-		if err = xml.Unmarshal(body, &msgEncryptBody); err != nil {
+		var msgEncryptRequest MsgEncryptRequest
+		if err = xml.Unmarshal(body, &msgEncryptRequest); err != nil {
 			fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource xml.Unmarshal(body, &msgEncryptBody) error: %+v\n", err)
 			return false, nil
 		}
-		check := CheckWechatAuthSign(msg_signature, timestamp, nonce, wm.Configure.Token, msgEncryptBody.Encrypt)
+		check := CheckWechatAuthSign(msg_signature, timestamp, nonce, wm.Configure.Token, msgEncryptRequest.Encrypt)
 		var message []byte
 		if check {
 			// 验证成功，解密消息，返回正文的二进制数组格式
-			message, err = wm.aesDecryptMessage(msgEncryptBody.Encrypt)
+			message, err = wm.aesDecryptMessage(msgEncryptRequest.Encrypt)
 			if err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource wm.aesDecryptMessage(msgEncryptBody.Encrypt) error: %+v\n", err)
 				return false, nil
@@ -132,20 +134,64 @@ func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
 }
 
 // 加密后的微信消息结构
-type MsgEncryptBody struct {
+type MsgEncryptRequest struct {
 	XMLName    xml.Name `xml:"xml"`
-	ToUserName string
-	Encrypt    string
+	ToUserName string   // 开发者微信号
+	Encrypt    string   // 加密的消息正文
+}
+
+// 响应加密消息的结构
+type MsgEncryptResponse struct {
+	XMLName      xml.Name  `xml:"xml"`
+	Encrypt      CDATAText // 加密的响应正文
+	MsgSignature CDATAText // 响应正文加密的签名
+	TimeStamp    int64     // 时间戳
+	Nonce        CDATAText // 随机字符串
 }
 
 // 加密发送消息
-func (wm *WechatMp) aesEncryptMessage() {
+func (wm *WechatMp) AESEncryptMessage(plainData []byte) (*MsgEncryptResponse, error) {
+	// 获取正文的length
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.BigEndian, int32(len(plainData)))
+	if err != nil {
+		return nil, fmt.Errorf("aesEncryptMessage binary.Write error: %+v\n", err)
+	}
+	msgLength := buf.Bytes()
 
+	// 获取16位字节数组
+	randomBytes := common.GetRandomString(16)
+
+	plainData = bytes.Join([][]byte{randomBytes, msgLength, plainData, []byte(wm.Configure.AppId)}, nil)
+
+	// 微信的EncodingAESKey是被编了码的, 使用前需要base64解码
+	// = 为占位符
+	aesKey, err := base64.StdEncoding.DecodeString(wm.Configure.EncodingAESKey + "=")
+	if err != nil {
+		return nil, fmt.Errorf("aesDecryptMessage base64 decode EncodingAESKey error: %+v\n", err)
+	}
+
+	cipherData, err := AESEncrypt(plainData, aesKey)
+	if err != nil {
+		return nil, fmt.Errorf("aesDecryptMessage AESEncrypt error: %+v\n", err)
+	}
+	encryptMessage := base64.StdEncoding.EncodeToString(cipherData)
+	timeStamp := time.Now().Unix()
+	nonce := strconv.FormatInt(timeStamp, 10)
+
+	msgEncryptResponse := new(MsgEncryptResponse)
+	msgEncryptResponse.Encrypt = Value2CDATA(encryptMessage)
+
+	msgEncryptResponse.MsgSignature = Value2CDATA(SignMsg(wm.Configure.Token, nonce, string(timeStamp), encryptMessage))
+	msgEncryptResponse.TimeStamp = timeStamp
+	msgEncryptResponse.Nonce = Value2CDATA(nonce)
+
+	return msgEncryptResponse, nil
 }
 
 // 解密收到的消息
 func (wm *WechatMp) aesDecryptMessage(cipherMessage string) ([]byte, error) {
-	// 先将密钥以及加密数据，做base64解码
+	// 微信的EncodingAESKey是被编了码的, 使用前需要base64解码
 	// = 为占位符
 	aesKey, err := base64.StdEncoding.DecodeString(wm.Configure.EncodingAESKey + "=")
 	if err != nil {

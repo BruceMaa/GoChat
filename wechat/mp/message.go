@@ -372,7 +372,7 @@ func NewMsgImageResponse(ToUserName, FromUserName, MediaId string) *MsgImageResp
 	return imageResp
 }
 
-// 新建一个图片回复信息，返回二进制数组格式
+// 新建一个图片回复信息，返回字节数组格式
 func NewMsgImageResponseByte(ToUserName, FromUserName, MediaId string) ([]byte, error) {
 	imageResp := NewMsgImageResponse(ToUserName, FromUserName, MediaId)
 	imageRespByte, err := xml.Marshal(imageResp)
@@ -403,7 +403,7 @@ func NewMsgVoiceResponse(ToUserName, FromUserName, MediaId string) *MsgVoiceResp
 	return voiceResp
 }
 
-// 新建一个语音回复信息，返回二进制数组格式
+// 新建一个语音回复信息，返回字节数组格式
 func NewMsgVoiceResponseByte(ToUserName, FromUserName, MediaId string) ([]byte, error) {
 	voiceResp := NewMsgVoiceResponse(ToUserName, FromUserName, MediaId)
 	voiceRespByte, err := xml.Marshal(voiceResp)
@@ -436,7 +436,7 @@ func NewMsgVideoResponse(ToUserName, FromUserName, MediaId, Title, Description s
 	return videoResp
 }
 
-// 新建一个视频回复信息，返回二进制数组格式
+// 新建一个视频回复信息，返回字节数组格式
 func NewMsgVideoResponseByte(ToUserName, FromUserName, MediaId, Title, Description string) ([]byte, error) {
 	videoResp := NewMsgVideoResponse(ToUserName, FromUserName, MediaId, Title, Description)
 	videoRespByte, err := xml.Marshal(videoResp)
@@ -471,7 +471,7 @@ func NewMsgMusicResponse(ToUserName, FromUserName, Title, Description, ThumbMedi
 	return musicResp
 }
 
-// 新建一个音乐回复信息，返回二进制数组格式
+// 新建一个音乐回复信息，返回字节数组格式
 func NewMsgMusicResponseByte(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl string) ([]byte, error) {
 	musicResp := NewMsgMusicResponse(ToUserName, FromUserName, Title, Description, ThumbMediaId, MusicUrl, HQMusicUrl)
 	musicRespByte, err := xml.Marshal(musicResp)
@@ -513,7 +513,7 @@ func NewMsgNewsResponse(ToUserName, FromUserName string, items []MsgNewsItemResp
 	return newsResp
 }
 
-// 新建一个图文回复信息，返回二进制数组格式
+// 新建一个图文回复信息，返回字节数组格式
 func NewMsgNewsResponseByte(ToUserName, FromUserName string, items []MsgNewsItemResponse) ([]byte, error) {
 	newsResp := NewMsgNewsResponse(ToUserName, FromUserName, items)
 	newsRespByte, err := xml.Marshal(newsResp)
