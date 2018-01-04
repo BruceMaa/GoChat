@@ -7,18 +7,18 @@ import (
 )
 
 const (
-	WECHAT_WEB_AUTH_CODE_API                 = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=%s&scope=%s&state=%s#wechat_redirect`
-	WECHAT_WEB_AUTH_ACCESS_TOKEN_API         = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=%s`
-	WECHAT_WEB_AUTH_REFRESH_ACCESS_TOKEN_API = `https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=%s&refresh_token=%s`
-	WECHAT_WEB_AUTH_USERINFO_API             = `https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=%s`
-	WECHAT_WEB_AUTH_CHECK_API                = `https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s`
+	WechatWebAuthCodeApi               = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=%s&scope=%s&state=%s#wechat_redirect` // 用户同意授权，获取code
+	WechatWebAuthAccessTokenApi        = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=%s`                                      // 通过code换取网页授权access_token
+	WechatWebAuthRefreshAccessTokenApi = `https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=%s&refresh_token=%s`                                      // 刷新access_token（如果需要）
+	WechatWebAuthUserinfoApi           = `https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=%s`                                                        // 拉取用户信息(需scope为 snsapi_userinfo)
+	WechatWebAuthCheckApi              = `https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s`                                                                    // 检验授权凭证（access_token）是否有效
 )
 
 type WechatAuthScope string
 
 const (
-	WECHAT_AUTH_SCOPE_SNSAPI_BASE     WechatAuthScope = "snsapi_base"     // 静默授权
-	WECHAT_AUTH_SCOPE_SNSAPI_USERINFO WechatAuthScope = "snsapi_userinfo" // 弹出授权页面
+	WechatAuthScopeSnsapiBase     WechatAuthScope = "snsapi_base"     // 静默授权
+	WechatAuthScopeSnsapiUserinfo WechatAuthScope = "snsapi_userinfo" // 弹出授权页面
 )
 
 type (
@@ -49,12 +49,12 @@ type (
 
 // 网页授权，拼接获取code的URL
 func (wm *WechatMp) BuildWebAuthCodeURL(redirectUrl string, scope WechatAuthScope, state string) string {
-	return fmt.Sprintf(WECHAT_WEB_AUTH_CODE_API, wm.Configure.AppId, redirectUrl, "code", scope, state)
+	return fmt.Sprintf(WechatWebAuthCodeApi, wm.Configure.AppId, redirectUrl, "code", scope, state)
 }
 
 // 通过code换取网页授权access_token
 func (wm *WechatMp) WebAuthAccessToken(code string) (*WechatWebAuthAccessToken, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_WEB_AUTH_ACCESS_TOKEN_API, wm.Configure.AppId, wm.Configure.AppSecret, code, "authorization_code"))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatWebAuthAccessTokenApi, wm.Configure.AppId, wm.Configure.AppSecret, code, "authorization_code"))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "WebAuthAccessToken http get error: %+v\n", err)
 		return nil, err
@@ -69,7 +69,7 @@ func (wm *WechatMp) WebAuthAccessToken(code string) (*WechatWebAuthAccessToken, 
 
 // 刷新网页授权accessToken
 func (wm *WechatMp) WebAuthRefreshAccessToken(refreshToken string) (*WechatWebAuthAccessToken, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_WEB_AUTH_REFRESH_ACCESS_TOKEN_API, wm.Configure.AppId, "refresh_token", refreshToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatWebAuthRefreshAccessTokenApi, wm.Configure.AppId, "refresh_token", refreshToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "WebAuthRefreshAccessToken http get error: %+v\n", err)
 		return nil, err
@@ -84,7 +84,7 @@ func (wm *WechatMp) WebAuthRefreshAccessToken(refreshToken string) (*WechatWebAu
 
 // 网页授权，拉取用户信息(需scope为 snsapi_userinfo)
 func (wm *WechatMp) WebAuthUserInfo(accessToken, openid string) (*WechatWebAuthUserInfo, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_WEB_AUTH_USERINFO_API, accessToken, openid, WECHAT_LANGUAGE_ZH_CN))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatWebAuthUserinfoApi, accessToken, openid, WechatLanguageZhCn))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "WebAuthUserInfo http get error: %+v\n", err)
 		return nil, err
@@ -99,7 +99,7 @@ func (wm *WechatMp) WebAuthUserInfo(accessToken, openid string) (*WechatWebAuthU
 
 // 检验授权凭证（access_token）是否有效
 func (wm *WechatMp) WebAuthCheck(accessToken, openid string) (*common.PublicError, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_WEB_AUTH_CHECK_API, accessToken, openid))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatWebAuthCheckApi, accessToken, openid))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "WebAuthCheck http get error: %+v\n", err)
 		return nil, err

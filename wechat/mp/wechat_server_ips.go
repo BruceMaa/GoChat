@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	GETCALLBACKIP_API = `https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s` // 获取微信服务器IP地址
+	WechatGetcallbackipApi = `https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s` // 获取微信服务器IP地址
 )
 
 type CallBackIP struct {
@@ -18,7 +18,7 @@ type CallBackIP struct {
 
 // 获取微信服务器IP地址
 func (wm *WechatMp) GetCallBackIP(accessToken string) (*CallBackIP, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(GETCALLBACKIP_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatGetcallbackipApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "wechat mp getcallbackip error: %+v\n", err)
 		return nil, fmt.Errorf("wechat mp getcallbackip error: %+v", err)

@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	MENU_CREATE_API = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s` // 自定义菜单创建接口
-	MENU_GET_API    = `https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s`    // 自定义菜单查询接口
-	MENU_DELETE_API = `https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s` // 自定义菜单删除接口
+	WechatMenuCreateApi = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s` // 自定义菜单创建接口
+	WechatMenuGetApi    = `https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s`    // 自定义菜单查询接口
+	WechatMenuDeleteApi = `https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s` // 自定义菜单删除接口
 )
 
 type (
@@ -34,7 +34,7 @@ type (
 
 // 自定义菜单创建接口
 func (wm *WechatMp) CreateMenu(accessToken string, buttons Buttons) (*common.PublicError, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(MENU_CREATE_API, accessToken), buttons)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMenuCreateApi, accessToken), buttons)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "menu create error: %+v\n", err)
 		return nil, fmt.Errorf("menu create error: %+v\n", err)
@@ -50,7 +50,7 @@ func (wm *WechatMp) CreateMenu(accessToken string, buttons Buttons) (*common.Pub
 
 // 自定义菜单查询接口
 func (wm *WechatMp) GetMenu(accessToken string) (*Menu, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(MENU_GET_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatMenuGetApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "menu get error: %+v\n", err)
 		return nil, fmt.Errorf("menu get error: %+v\n", err)
@@ -66,7 +66,7 @@ func (wm *WechatMp) GetMenu(accessToken string) (*Menu, error) {
 
 // 自定义菜单删除接口
 func (wm *WechatMp) DeleteMenu(accessToken string) (*common.PublicError, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(MENU_DELETE_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatMenuDeleteApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "menu delete error: %+v\n", err)
 		return nil, fmt.Errorf("menu delete error: %+v\n", err)

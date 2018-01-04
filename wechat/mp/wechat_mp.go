@@ -14,22 +14,22 @@ import (
 )
 
 const (
-	WECHAT_REQUEST_ECHOSTR       = "echostr"       // 微信认证服务器请求参数:返回字符串
-	WECHAT_REQUEST_TIMESTAMP     = "timestamp"     // 微信服务器请求参数：时间戳
-	WECHAT_REQUEST_NONCE         = "nonce"         // 微信服务器请求参数：随机字符串
-	WECHAT_REQUEST_SIGNATURE     = "signature"     // 微信服务器请求参数：签名字符串
-	WECHAT_REQUEST_ENCRYPT_TYPE  = "encrypt_type"  // 微信服务器请求参数：加密方式
-	WECHAT_REQUEST_MSG_SIGNATURE = "msg_signature" // 微信服务器请求参数：消息签名字符串
+	WechatRequestEchostr          = "echostr"       // 微信认证服务器请求参数:返回字符串
+	WechatRequestTimestamp        = "timestamp"     // 微信服务器请求参数：时间戳
+	WechatRequestNonce            = "nonce"         // 微信服务器请求参数：随机字符串
+	WechatRequestSignature        = "signature"     // 微信服务器请求参数：签名字符串
+	WechatRequestEncryptType      = "encrypt_type"  // 微信服务器请求参数：加密方式
+	WechatRequestMessageSignature = "msg_signature" // 微信服务器请求参数：消息签名字符串
 
-	RESPONSE_STRING_SUCCESS = "success"
-	RESPONSE_STRING_FAIL    = "fail"
-	RESPONSE_STRING_INVALID = "invalid wechat server"
+	WechatResponseStringSuccess = "success"
+	WechatResponseStringFail    = "fail"
+	WechatResponseStringInvalid = "invalid wechat server"
 
-	WECHAT_LANGUAGE_ZH_CN = "zh_CH" // 微信语言，简体中文
-	WECHAT_LANGUAGE_ZH_TW = "zh_TW" // 微信语言，繁体中文
-	WECHAT_LANGUAGE_EN    = "en"    // 微信语言，英文
+	WechatLanguageZhCn = "zh_CH" // 微信语言，简体中文
+	WechatLanguageZhTw = "zh_TW" // 微信语言，繁体中文
+	WechatLanguageEn   = "en"    // 微信语言，英文
 
-	WECHAT_ENCRYPT_TYPE = "aes" // 微信消息加密方式
+	WechatEncryptType = "aes" // 微信消息加密方式
 )
 
 type (
@@ -77,26 +77,26 @@ func New(wechatMpConfig *WechatMpConfig) *WechatMp {
 
 // 用户在设置微信公众号服务器配置，并开启后，微信会发送一次认证请求，此函数即做此验证用
 func (wm *WechatMp) AuthWechatServer(r *http.Request) string {
-	echostr := r.FormValue(WECHAT_REQUEST_ECHOSTR)
+	echostr := r.FormValue(WechatRequestEchostr)
 	if wm.checkWechatSource(r) {
 		return echostr
 	}
-	return RESPONSE_STRING_INVALID
+	return WechatResponseStringInvalid
 }
 
 // 检验认证来源是否为微信
 func (wm *WechatMp) checkWechatSource(r *http.Request) bool {
-	timestamp := r.FormValue(WECHAT_REQUEST_TIMESTAMP)
-	nonce := r.FormValue(WECHAT_REQUEST_NONCE)
-	signature := r.FormValue(WECHAT_REQUEST_SIGNATURE)
+	timestamp := r.FormValue(WechatRequestTimestamp)
+	nonce := r.FormValue(WechatRequestNonce)
+	signature := r.FormValue(WechatRequestSignature)
 	return CheckWechatAuthSign(signature, wm.Configure.Token, timestamp, nonce)
 }
 
 // 检验消息来源，并且提取消息
 func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
 	//openid := r.FormValue("openid") // openid，暂时还没想到为什么传值过来
-	timestamp := r.FormValue(WECHAT_REQUEST_TIMESTAMP)
-	nonce := r.FormValue(WECHAT_REQUEST_NONCE)
+	timestamp := r.FormValue(WechatRequestTimestamp)
+	nonce := r.FormValue(WechatRequestNonce)
 
 	// 读取request body
 	body, err := ioutil.ReadAll(r.Body)
@@ -106,10 +106,10 @@ func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
 		return false, nil
 	}
 	// 判断消息是否经过加密
-	encrypt_type := r.FormValue(WECHAT_REQUEST_ENCRYPT_TYPE)
-	if encrypt_type == WECHAT_ENCRYPT_TYPE {
+	encrypt_type := r.FormValue(WechatRequestEncryptType)
+	if encrypt_type == WechatEncryptType {
 		// 如果消息已经加密
-		msg_signature := r.FormValue(WECHAT_REQUEST_MSG_SIGNATURE)
+		msg_signature := r.FormValue(WechatRequestMessageSignature)
 		var msgEncryptRequest MsgEncryptRequest
 		if err = xml.Unmarshal(body, &msgEncryptRequest); err != nil {
 			fmt.Fprintf(common.WechatErrorLoggerWriter, "checkMessageSource xml.Unmarshal(body, &msgEncryptBody) error: %+v\n", err)
@@ -129,7 +129,7 @@ func (wm *WechatMp) checkMessageSource(r *http.Request) (bool, []byte) {
 		return check, message
 	}
 	// 如果消息未加密
-	signature := r.FormValue(WECHAT_REQUEST_SIGNATURE)
+	signature := r.FormValue(WechatRequestSignature)
 	return CheckWechatAuthSign(signature, wm.Configure.Token, timestamp, nonce), body
 }
 
@@ -238,8 +238,8 @@ func (wm *WechatMp) CallBackFunc(r *http.Request) string {
 	// 首先，验证消息是否从微信服务发出
 	valid, body := wm.checkMessageSource(r)
 	if !valid {
-		fmt.Fprintln(common.WechatErrorLoggerWriter, RESPONSE_STRING_INVALID)
-		return RESPONSE_STRING_FAIL
+		fmt.Fprintln(common.WechatErrorLoggerWriter, WechatResponseStringInvalid)
+		return WechatResponseStringFail
 	}
 	return wm.wechatMessageHandler(body)
 }

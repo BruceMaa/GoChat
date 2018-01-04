@@ -7,32 +7,32 @@ import (
 )
 
 const (
-	WECHAT_USER_TAGS_CREATE_API                 = `https://api.weixin.qq.com/cgi-bin/tags/create?access_token=%s`                   // 创建标签
-	WECHAT_USER_TAGS_GET_API                    = `https://api.weixin.qq.com/cgi-bin/tags/get?access_token=%s`                      // 获取公众号已创建的标签
-	WECHAT_USER_TAGS_UPDATE_API                 = `https://api.weixin.qq.com/cgi-bin/tags/update?access_token=%s`                   // 编辑标签
-	WECHAT_USER_TAGS_DELETE_API                 = `https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=%s`                   // 删除标签
-	WECHAT_USER_TAG_USERS_API                   = `https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s`                  // 获取标签下粉丝列表
-	WECHAT_USER_TAGS_MEMBERS_BATCHTAGGING_API   = `https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=%s`     // 批量为用户打标签
-	WECHAT_USER_TAGS_MEMBERS_BATCHUNTAGGING_API = `https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=%s`   // 批量为用户取消标签
-	WECHAT_USER_TAGS_MEMBERS_BLACKLIST_API      = `https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=%s`     // 获取公众号的黑名单列表
-	WECHAT_USER_TAGS_MEMBERS_BATCHBLACK_API     = `https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=%s`   // 批量拉黑用户
-	WECHAT_USER_TAGS_MEMBERS_BATCHUNBLACK_API   = `https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=%s` // 批量取消拉黑用户
-	WECHAT_USER_TAGS_GETIDLIST_API              = `https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=%s`                // 获取用户身上的标签列表
+	WechatUserTagsCreateApi                = `https://api.weixin.qq.com/cgi-bin/tags/create?access_token=%s`                   // 创建标签
+	WechatUserTagsGetApi                   = `https://api.weixin.qq.com/cgi-bin/tags/get?access_token=%s`                      // 获取公众号已创建的标签
+	WechatUserTagsUpdateApi                = `https://api.weixin.qq.com/cgi-bin/tags/update?access_token=%s`                   // 编辑标签
+	WechatUserTagsDeleteApi                = `https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=%s`                   // 删除标签
+	WechatuserTagUsersApi                  = `https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s`                  // 获取标签下粉丝列表
+	WechatUserTagsMembersBatchtaggingApi   = `https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=%s`     // 批量为用户打标签
+	WechatUserTagsMembersBatchuntaggingApi = `https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=%s`   // 批量为用户取消标签
+	WechatUserTagsMembersBlacklistApi      = `https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=%s`     // 获取公众号的黑名单列表
+	WechatUserTagsMembersBatchblackApi     = `https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=%s`   // 批量拉黑用户
+	WechatUserTagsMembersBatchunblackApi   = `https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=%s` // 批量取消拉黑用户
+	WechatUserTagsGetidlistApi             = `https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=%s`                // 获取用户身上的标签列表
 
-	WECHAT_USER_UPDATE_REMARK_API = `https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=%s` // 设置用户备注名
+	WechatUserUpdateRemarkApi = `https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=%s` // 设置用户备注名
 
-	WECHAT_USER_INFO_API       = `https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s` // 获取用户基本信息
-	WECHAT_USER_INFO_BATCH_API = `https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=%s`          // 批量获取用户基本信息
+	WechatUserInfoApi      = `https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=%s` // 获取用户基本信息
+	WechatUserInfoBatchApi = `https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=%s`          // 批量获取用户基本信息
 
-	WECHAT_USER_GET_API = `https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s` // 获取用户列表
+	WechatUserGetApi = `https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s` // 获取用户列表
 )
 
 type WechatSex int
 
 const (
-	WECHAT_SEX_UNKNOW WechatSex = iota // 未知性别
-	WECHAT_SEX_MALE                    // 男性
-	WECHAT_SEX_FEMALE                  // 女性
+	WechatSexUnknow WechatSex = iota // 未知性别
+	WechatSexMale                    // 男性
+	WechatSexFemale                  // 女性
 )
 
 type (
@@ -86,7 +86,7 @@ type (
 
 // 获取用户基本信息
 func (wm *WechatMp) UserInfo(accessToken, openid string) (*WechatUserInfo, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_USER_INFO_API, accessToken, openid, WECHAT_LANGUAGE_ZH_CN))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatUserInfoApi, accessToken, openid, WechatLanguageZhCn))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "UserInfo http get error: %+v\n", err)
 		return nil, err
@@ -101,7 +101,7 @@ func (wm *WechatMp) UserInfo(accessToken, openid string) (*WechatUserInfo, error
 
 // 批量获取用户基本信息
 func (wm *WechatMp) BatchUserInfos(accessToken string, userList *WechatUserList) (*WechatUserInfoList, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_USER_INFO_BATCH_API, accessToken), userList)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatUserInfoBatchApi, accessToken), userList)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "BatchUserInfos http post error: %+v\n", err)
 		return nil, err
@@ -116,7 +116,7 @@ func (wm *WechatMp) BatchUserInfos(accessToken string, userList *WechatUserList)
 
 // 获取用户列表
 func (wm *WechatMp) GetUsers(accessToken, nextOpenId string) (*WechatUserOpenIdList, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_USER_GET_API, accessToken, nextOpenId))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatUserGetApi, accessToken, nextOpenId))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "Get Users http get error: %+v\n", err)
 		return nil, err
@@ -131,7 +131,7 @@ func (wm *WechatMp) GetUsers(accessToken, nextOpenId string) (*WechatUserOpenIdL
 
 // 创建标签
 func (wm *WechatMp) CreateTag(accessToken string, tag *WechatUserTag) (*WechatUserTag, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_USER_TAGS_CREATE_API, accessToken), tag)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatUserTagsCreateApi, accessToken), tag)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "Create Tag http post error: %+v\n", err)
 		return nil, err
@@ -146,7 +146,7 @@ func (wm *WechatMp) CreateTag(accessToken string, tag *WechatUserTag) (*WechatUs
 
 // 获取公众号已创建的标签
 func (wm *WechatMp) GetTags(accessToken string) (*WechatUserTags, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_USER_TAGS_GET_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatUserTagsGetApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "Get Tags http get error: %+v\n", err)
 		return nil, err
@@ -202,7 +202,7 @@ func (wm *WechatMp) GetBlackList(accessToken, beginOpenId string) (*WechatUserOp
 	blackReq := &blackListReq{
 		BeginOpenid: beginOpenId,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_USER_TAGS_MEMBERS_BLACKLIST_API, accessToken), *blackReq)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatUserTagsMembersBlacklistApi, accessToken), *blackReq)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetBlackList http post error: %+v\n", err)
 		return nil, err
@@ -225,7 +225,7 @@ func (wm *WechatMp) BatchBlackUsers(accessToken string, openidList ...string) (*
 	openidReq := &openidListReq{
 		OpenidList: openidList,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_USER_TAGS_MEMBERS_BATCHBLACK_API, accessToken), &openidReq)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatUserTagsMembersBatchblackApi, accessToken), &openidReq)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "BatchBlackUsers http post error: %+v\n", err)
 		return nil, err
@@ -244,7 +244,7 @@ func (wm *WechatMp) BatchUnBlackUsers(accessToken string, openidList ...string) 
 	openidReq := &openidListReq{
 		OpenidList: openidList,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_USER_TAGS_MEMBERS_BATCHUNBLACK_API, accessToken), &openidReq)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatUserTagsMembersBatchunblackApi, accessToken), &openidReq)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "BatchUnBlackUsers http post error: %+v\n", err)
 		return nil, err

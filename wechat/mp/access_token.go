@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	WECHAT_ACCESS_TOKEN_API = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s` // 获取微信accessToken地址
+	WechatAccessTokenApi = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s` // 获取微信accessToken地址
 )
 
 type (
@@ -23,7 +23,7 @@ type (
 
 // 获取微信通行证
 func (wm *WechatMp) AccessTokenFromWechat() (*WechatAccessToken, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_ACCESS_TOKEN_API, wm.Configure.AppId, wm.Configure.AppSecret))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatAccessTokenApi, wm.Configure.AppId, wm.Configure.AppSecret))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "access_token get error: %+v\n", err)
 		return nil, fmt.Errorf("access_token get error: %+v\n", err)

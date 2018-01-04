@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	WECHAT_TICKET_API = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s` // 获取微信ticket地址
+	WechatTicketGetApi = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=%s` // 获取微信ticket地址
 )
 
 type Ticket struct {
@@ -19,13 +19,13 @@ type Ticket struct {
 type TicketType string
 
 const (
-	WECHAT_TICKET_TYPE_JSAPI  TicketType = "jsapi"   // JSSDK获取ticket的type
-	WECHAT_TICKET_TYPE_WXCART TicketType = "wx_card" // 微信卡券
+	WechatTicketTypeJsapi  TicketType = "jsapi"   // JSSDK获取ticket的type
+	WechatTicketTypeWxcart TicketType = "wx_card" // 微信卡券
 )
 
 // 获取微信ticket
 func (wm *WechatMp) GetTicket(accessToken string, ticketType TicketType) (*Ticket, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_TICKET_API, accessToken, ticketType))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatTicketGetApi, accessToken, ticketType))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetTicket http get error: %+v\n", err)
 		return nil, err

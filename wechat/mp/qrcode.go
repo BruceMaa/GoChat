@@ -7,15 +7,15 @@ import (
 )
 
 const (
-	WECHAT_QRCODE_CREATE_API = `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s` // 创建二维码API
-	WECHAT_QRCODE_SHOW_API   = `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s`           // 显示二维码API
+	WechatQrcodeCreateApi = `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=%s` // 创建二维码API
+	WechatQrcodeShowApi   = `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s`           // 显示二维码API
 )
 
 const (
-	WECHAT_QRCODE_SCENE           = "QR_SCENE"           // 二维码类型-临时的整型参数值
-	WECHAT_QRCODE_STR_SCENE       = "QR_STR_SCENE"       // 二维码类型-临时的字符串参数值
-	WECHAT_QRCODE_LIMIT_SCENE     = "QR_LIMIT_SCENE"     // 二维码类型-永久的整型参数值
-	WECHAT_QRCODE_LIMIT_STR_SCENE = "QR_LIMIT_STR_SCENE" // 二维码类型-永久的字符串参数值
+	WechatQrcodeScene         = "QR_SCENE"           // 二维码类型-临时的整型参数值
+	WechatQrcodeStrScene      = "QR_STR_SCENE"       // 二维码类型-临时的字符串参数值
+	WechatQrcodeLimitScene    = "QR_LIMIT_SCENE"     // 二维码类型-永久的整型参数值
+	WechatQrcodeLimitStrScene = "QR_LIMIT_STR_SCENE" // 二维码类型-永久的字符串参数值
 )
 
 type (
@@ -41,7 +41,7 @@ type (
 func (wm *WechatMp) QrcodeIntCreate(accessToken string, sceneId, expireSeconds int64) (*QrcodeResponse, error) {
 	qrcodeRequest := &QrcodeRequest{
 		ExpireSeconds: expireSeconds,
-		ActionName:    WECHAT_QRCODE_SCENE,
+		ActionName:    WechatQrcodeScene,
 	}
 	qrcodeRequest.ActionInfo.Scene.SceneId = sceneId
 	return qrcodeCreate(accessToken, qrcodeRequest)
@@ -51,7 +51,7 @@ func (wm *WechatMp) QrcodeIntCreate(accessToken string, sceneId, expireSeconds i
 func (wm *WechatMp) QrcodeStrCreate(accessToken string, sceneStr string, expireSeconds int64) (*QrcodeResponse, error) {
 	qrcodeRequest := &QrcodeRequest{
 		ExpireSeconds: expireSeconds,
-		ActionName:    WECHAT_QRCODE_STR_SCENE,
+		ActionName:    WechatQrcodeStrScene,
 	}
 	qrcodeRequest.ActionInfo.Scene.SceneStr = sceneStr
 	return qrcodeCreate(accessToken, qrcodeRequest)
@@ -60,7 +60,7 @@ func (wm *WechatMp) QrcodeStrCreate(accessToken string, sceneStr string, expireS
 // 创建永久二维码，整型场景值
 func (wm *WechatMp) QrcodeIntLimitCreate(accessToken string, sceneId int64) (*QrcodeResponse, error) {
 	qrcodeRequest := &QrcodeRequest{
-		ActionName: WECHAT_QRCODE_LIMIT_SCENE,
+		ActionName: WechatQrcodeLimitScene,
 	}
 	qrcodeRequest.ActionInfo.Scene.SceneId = sceneId
 	return qrcodeCreate(accessToken, qrcodeRequest)
@@ -69,7 +69,7 @@ func (wm *WechatMp) QrcodeIntLimitCreate(accessToken string, sceneId int64) (*Qr
 // 创建永久二维码，字符串场景值
 func (wm *WechatMp) QrcodeStrLimitCreate(accessToken, sceneStr string) (*QrcodeResponse, error) {
 	qrcodeRequest := &QrcodeRequest{
-		ActionName: WECHAT_QRCODE_LIMIT_STR_SCENE,
+		ActionName: WechatQrcodeLimitStrScene,
 	}
 	qrcodeRequest.ActionInfo.Scene.SceneStr = sceneStr
 	return qrcodeCreate(accessToken, qrcodeRequest)
@@ -77,7 +77,7 @@ func (wm *WechatMp) QrcodeStrLimitCreate(accessToken, sceneStr string) (*QrcodeR
 
 // 创建二维码
 func qrcodeCreate(accessToken string, qrcodeRequest *QrcodeRequest) (*QrcodeResponse, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_QRCODE_CREATE_API, accessToken), qrcodeRequest)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatQrcodeCreateApi, accessToken), qrcodeRequest)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "QrcodeCreate http error: %+v\n", err)
 		return nil, err
@@ -93,5 +93,5 @@ func qrcodeCreate(accessToken string, qrcodeRequest *QrcodeRequest) (*QrcodeResp
 
 // 显示二维码图片
 func (wm *WechatMp) QrcodeShow(ticket string) ([]byte, error) {
-	return common.HTTPGet(fmt.Sprintf(WECHAT_QRCODE_SHOW_API, ticket))
+	return common.HTTPGet(fmt.Sprintf(WechatQrcodeShowApi, ticket))
 }

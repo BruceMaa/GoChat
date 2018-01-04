@@ -6,9 +6,9 @@ import (
 	"github.com/chanxuehong/wechat/json"
 )
 
-const WECHAT_SHORT_URL_API = `https://api.weixin.qq.com/cgi-bin/shorturl?access_token=%s`
+const WechatShortUrlApi = `https://api.weixin.qq.com/cgi-bin/shorturl?access_token=%s`
 
-const WECHAT_SHORT_URL_ACTION = "long2short"
+const WechatShortUrlAction = "long2short"
 
 type (
 	ShortUrlRequest struct {
@@ -25,10 +25,10 @@ type (
 // 长链接转短链接接口
 func (wm *WechatMp) Long2Short(accessToken, longUrl string) (*ShortUrlResponse, error) {
 	shortUrlReq := &ShortUrlRequest{
-		Action:  WECHAT_SHORT_URL_ACTION,
+		Action:  WechatShortUrlAction,
 		LongUrl: longUrl,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_SHORT_URL_API, accessToken), shortUrlReq)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatShortUrlApi, accessToken), shortUrlReq)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "Long2Short common.HTTPPostJson error: %+v\n", err)
 		return nil, err

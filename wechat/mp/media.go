@@ -8,26 +8,26 @@ import (
 )
 
 const (
-	WECHAT_MEDIA_UPLOAD_API         = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=%s&type=%s`          // 新增临时素材
-	WECHAT_MEDIA_GET_API            = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s`         // 获取临时素材
-	WECHAT_MEDIA_UPLOADIMG_API      = `https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=%s`               // 上传图文消息内的图片获取URL
-	WECHAT_MATERIAL_ADD_API         = `https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%s&type=%s` // 新增其他类型永久素材
-	WECHAT_MATERIAL_GET_API         = `https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=%s`         // 获取永久素材
-	WECHAT_MATERIAL_DELETE_API      = `https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=%s`         // 删除永久素材
-	WECHAT_MATERIAL_GET_COUNT_API   = `https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=%s`    // 获取素材总数
-	WECHAT_MATERIAL_BATCHGET_API    = `https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=%s`    // 获取素材列表
-	WECHAT_MATERIAL_NEWS_ADD_API    = `https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=%s`             // 新增永久图文素材
-	WECHAT_MATERIAL_NEWS_UPDATE_API = `https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=%s`          // 修改永久图文素材
+	WechatMediaUploadApi        = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=%s&type=%s`          // 新增临时素材
+	WechatMediaGetApi           = `https://api.weixin.qq.com/cgi-bin/media/get?access_token=%s&media_id=%s`         // 获取临时素材
+	WechatMediaUploadimgApi     = `https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=%s`               // 上传图文消息内的图片获取URL
+	WechatMaterialAddApi        = `https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=%s&type=%s` // 新增其他类型永久素材
+	WechatMaterialGetApi        = `https://api.weixin.qq.com/cgi-bin/material/get_material?access_token=%s`         // 获取永久素材
+	WechatMaterialDeleteApi     = `https://api.weixin.qq.com/cgi-bin/material/del_material?access_token=%s`         // 删除永久素材
+	WechatMaterialGetcountApi   = `https://api.weixin.qq.com/cgi-bin/material/get_materialcount?access_token=%s`    // 获取素材总数
+	WechatMaterialBatchgetApi   = `https://api.weixin.qq.com/cgi-bin/material/batchget_material?access_token=%s`    // 获取素材列表
+	WechatMaterialAddnewsApi    = `https://api.weixin.qq.com/cgi-bin/material/add_news?access_token=%s`             // 新增永久图文素材
+	WechatMaterialUpdatenewsApi = `https://api.weixin.qq.com/cgi-bin/material/update_news?access_token=%s`          // 修改永久图文素材
 )
 
 type WechatMediaType string
 
 const (
-	WECHAT_MEDIA_TYPE_IMAGE WechatMediaType = "image" // 素材类型：图片
-	WECHAT_MEDIA_TYPE_VOICE WechatMediaType = "voice" // 素材类型：语音
-	WECHAT_MEDIA_TYPE_VIDEO WechatMediaType = "video" // 素材类型：视频
-	WECHAT_MEDIA_TYPE_THUMB WechatMediaType = "thumb" // 素材类型：缩略图，主要用于视频与音乐格式的缩略图
-	WECHAT_MEDIA_TYPE_NEWS  WechatMediaType = "news"  // 素材类型：图文
+	WechatMediaTypeImage WechatMediaType = "image" // 素材类型：图片
+	WechatMediaTypeVoice WechatMediaType = "voice" // 素材类型：语音
+	WechatMediaTypeVideo WechatMediaType = "video" // 素材类型：视频
+	WechatMediaTypeThumb WechatMediaType = "thumb" // 素材类型：缩略图，主要用于视频与音乐格式的缩略图
+	WechatMediaTypeNews  WechatMediaType = "news"  // 素材类型：图文
 )
 
 type MediaResponse struct {
@@ -47,14 +47,14 @@ type WechatArticleNeedOpenComment int
 type WechatArticleOnlyFansCanComment int
 
 const (
-	WECAHT_ARTICLE_SHOW_COVER_PIC_FALSE WechatArticleShowCoverPic = 0 // 不显示封面
-	WECAHT_ARTICLE_SHOW_COVER_PIC_TRUE  WechatArticleShowCoverPic = 1 // 显示封面
+	WechatArticleShowCoverPicFalse WechatArticleShowCoverPic = 0 // 不显示封面
+	WechatArticleShowCoverPicTrue  WechatArticleShowCoverPic = 1 // 显示封面
 
-	WECHAT_ARTICLE_NEED_OPEN_COMMENT_NO  WechatArticleNeedOpenComment = 0 // 不打开评论
-	WECHAT_ARTICLE_NEED_OPEN_COMMENT_YES WechatArticleNeedOpenComment = 1 // 打开评论
+	WechatArticleNeedOpenCommentNo  WechatArticleNeedOpenComment = 0 // 不打开评论
+	WechatArticleNeedOpenCommentYes WechatArticleNeedOpenComment = 1 // 打开评论
 
-	WECHAT_ARTICLE_ONLY_FANS_CAN_COMMENT_NO  WechatArticleOnlyFansCanComment = 0 // 否，所有人都可以评论
-	WECHAT_ARTICLE_ONLY_FANS_CAN_COMMENT_YES WechatArticleOnlyFansCanComment = 1 // 是滴, 只有粉丝才能评论
+	WechatArticleOnlyFansCanCommentNo  WechatArticleOnlyFansCanComment = 0 // 否，所有人都可以评论
+	WechatArticleOnlyFansCanCommentYes WechatArticleOnlyFansCanComment = 1 // 是滴, 只有粉丝才能评论
 )
 
 type (
@@ -141,8 +141,8 @@ type (
 )
 
 const (
-	upload_media_field_name       = "media"       // 上传素材时，文件入参名称
-	add_material_video_field_desp = "description" // 添加视频素材时，必须添加视频说明
+	uploadMediaFieldName      = "media"       // 上传素材时，文件入参名称
+	addMaterialVideoFieldDesp = "description" // 添加视频素材时，必须添加视频说明
 )
 
 /*
@@ -172,11 +172,11 @@ func (wm *WechatMp) UploadMedia(accessToken string, mediaType WechatMediaType, f
 	}
 	defer data.Close()
 	formFile := &common.MultipartFormFile{
-		FieldName: upload_media_field_name,
+		FieldName: uploadMediaFieldName,
 		FileName:  file.Filename,
 		Reader:    data,
 	}
-	resp, err := common.HTTPPostForm(fmt.Sprintf(WECHAT_MEDIA_UPLOAD_API, accessToken, mediaType), nil, *formFile)
+	resp, err := common.HTTPPostForm(fmt.Sprintf(WechatMediaUploadApi, accessToken, mediaType), nil, *formFile)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "UploadMedia common.HTTPUpload error: %+v\n", err)
 		return nil, err
@@ -191,7 +191,7 @@ func (wm *WechatMp) UploadMedia(accessToken string, mediaType WechatMediaType, f
 
 // 获取临时素材
 func (wm *WechatMp) GetMedia(accessToken, mediaId string) (*[]byte, *common.PublicError, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_MEDIA_GET_API, accessToken, mediaId))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatMediaGetApi, accessToken, mediaId))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetMedia http get error: %+v\n", err)
 		return nil, nil, err
@@ -211,7 +211,7 @@ func (wm *WechatMp) GetMedia(accessToken, mediaId string) (*[]byte, *common.Publ
 
 // 新增永久图文素材
 func (wm *WechatMp) AddMaterialNews(accessToken string, articles *Articles) (*Material, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_NEWS_ADD_API, accessToken), &articles)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialAddnewsApi, accessToken), &articles)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "AddMaterialNews http post error: %+v\n", err)
 		return nil, err
@@ -233,11 +233,11 @@ func (wm *WechatMp) UploadMediaImg(accessToken string, file multipart.FileHeader
 	}
 	defer data.Close()
 	formFile := &common.MultipartFormFile{
-		FieldName: upload_media_field_name,
+		FieldName: uploadMediaFieldName,
 		FileName:  file.Filename,
 		Reader:    data,
 	}
-	resp, err := common.HTTPPostForm(fmt.Sprintf(WECHAT_MEDIA_UPLOADIMG_API, accessToken), nil, *formFile)
+	resp, err := common.HTTPPostForm(fmt.Sprintf(WechatMediaUploadimgApi, accessToken), nil, *formFile)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "UploadMediaImg common.HTTPPostForm error: %+v\n", err)
 		return nil, err
@@ -254,7 +254,7 @@ func (wm *WechatMp) UploadMediaImg(accessToken string, file multipart.FileHeader
 // 在上传视频素材时需要POST另一个表单，id为description，包含素材的描述信息，内容格式为JSON
 //TODO 待验证
 func (wm *WechatMp) AddMaterial(accessToken string, mediaType WechatMediaType, file multipart.FileHeader, videoRequest *MaterialVideo) (*Material, error) {
-	if mediaType == WECHAT_MEDIA_TYPE_VIDEO && videoRequest == nil {
+	if mediaType == WechatMediaTypeVideo && videoRequest == nil {
 		return nil, fmt.Errorf("上传视频素材，需要填写视频信息MaterialVideoRequest")
 	}
 
@@ -265,7 +265,7 @@ func (wm *WechatMp) AddMaterial(accessToken string, mediaType WechatMediaType, f
 	}
 	defer data.Close()
 	formFile := &common.MultipartFormFile{
-		FieldName: upload_media_field_name,
+		FieldName: uploadMediaFieldName,
 		FileName:  file.Filename,
 		Reader:    data,
 	}
@@ -274,10 +274,10 @@ func (wm *WechatMp) AddMaterial(accessToken string, mediaType WechatMediaType, f
 		if data, err := json.Marshal(videoRequest); err != nil {
 			return nil, err
 		} else {
-			fields[add_material_video_field_desp] = string(data)
+			fields[addMaterialVideoFieldDesp] = string(data)
 		}
 	}
-	resp, err := common.HTTPPostForm(fmt.Sprintf(WECHAT_MATERIAL_ADD_API, accessToken, mediaType), fields, *formFile)
+	resp, err := common.HTTPPostForm(fmt.Sprintf(WechatMaterialAddApi, accessToken, mediaType), fields, *formFile)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "AddMaterial common.HTTPPostForm error: %+v\n", err)
 		return nil, err
@@ -295,7 +295,7 @@ func (wm *WechatMp) GetNewsMaterial(accessToken, mediaId string) (*ArticleNews, 
 	material := &Material{
 		MediaId: mediaId,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_GET_API, accessToken), *material)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialGetApi, accessToken), *material)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetNewsMaterial common.HTTPPostJson error: %+v\n", err)
 		return nil, err
@@ -313,7 +313,7 @@ func (wm *WechatMp) GetVideoMaterial(accessToken, mediaId string) (*MaterialVide
 	material := &Material{
 		MediaId: mediaId,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_GET_API, accessToken), *material)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialGetApi, accessToken), *material)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetVideoMaterial http post error: %+v\n", err)
 		return nil, err
@@ -331,7 +331,7 @@ func (wm *WechatMp) GetOtherMaterial(accessToken, mediaId string) ([]byte, error
 	material := &Material{
 		MediaId: mediaId,
 	}
-	return common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_GET_API, accessToken), material)
+	return common.HTTPPostJson(fmt.Sprintf(WechatMaterialGetApi, accessToken), material)
 }
 
 // 删除永久素材
@@ -339,7 +339,7 @@ func (wm *WechatMp) DeleteMaterial(accessToken, mediaId string) (*common.PublicE
 	material := &Material{
 		MediaId: mediaId,
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_DELETE_API, accessToken), *material)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialDeleteApi, accessToken), *material)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "DeleteMaterial http post error: %+v\n", err)
 		return nil, err
@@ -354,7 +354,7 @@ func (wm *WechatMp) DeleteMaterial(accessToken, mediaId string) (*common.PublicE
 
 // 修改永久图文素材
 func (wm *WechatMp) UpdateMaterial(accessToken string, article *ArticleUpdate) (*common.PublicError, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_NEWS_UPDATE_API, accessToken), &article)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialUpdatenewsApi, accessToken), &article)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "UpdateMaterial http post error: %+v\n", err)
 		return nil, err
@@ -369,7 +369,7 @@ func (wm *WechatMp) UpdateMaterial(accessToken string, article *ArticleUpdate) (
 
 // 获取素材总数
 func (wm *WechatMp) GetMaterialCount(accessToken string) (*MaterialCount, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_MATERIAL_GET_COUNT_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatMaterialGetcountApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetMaterialCount http get error: %+v\n", err)
 		return nil, err
@@ -384,7 +384,7 @@ func (wm *WechatMp) GetMaterialCount(accessToken string) (*MaterialCount, error)
 
 // 批量获取图文素材列表
 func (wm *WechatMp) BatchGetNewsMaterial(accessToken string, request *BatchMaterialRequest) (*BatchMaterialNewsResponse, error) {
-	if request.Type != WECHAT_MEDIA_TYPE_NEWS {
+	if request.Type != WechatMediaTypeNews {
 		return nil, fmt.Errorf("此方法只能批量获取图文消息! 获取其他素材列表，请使用方法 BatchGetMaterial。\n")
 	}
 
@@ -392,7 +392,7 @@ func (wm *WechatMp) BatchGetNewsMaterial(accessToken string, request *BatchMater
 		return nil, fmt.Errorf("获取素材的数据量需要在1到20之间!\n")
 	}
 
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_BATCHGET_API, accessToken), &request)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialBatchgetApi, accessToken), &request)
 
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "BatchGetNewsMaterial http post error: %+v\n", err)
@@ -408,13 +408,13 @@ func (wm *WechatMp) BatchGetNewsMaterial(accessToken string, request *BatchMater
 
 // 批量获取素材列表，图文素材单独获取:BatchGetNewsMaterial
 func (wm *WechatMp) BatchGetMaterial(accessToken string, request *BatchMaterialRequest) (*BatchMaterialResponse, error) {
-	if request.Type == WECHAT_MEDIA_TYPE_NEWS {
+	if request.Type == WechatMediaTypeNews {
 		return nil, fmt.Errorf("此方法只能获取图片、语音、视频素材列表，若获取图文素材列表，请使用方法 BatchGetNewsMaterial。\n")
 	}
 	if request.Count > 20 || request.Count < 1 {
 		return nil, fmt.Errorf("获取素材的数据量需要在1到20之间!\n")
 	}
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_MATERIAL_BATCHGET_API, accessToken), &request)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatMaterialBatchgetApi, accessToken), &request)
 
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "BatchGetMaterial http post error: %+v\n", err)

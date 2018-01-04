@@ -9,32 +9,32 @@ import (
 )
 
 const (
-	MSG_TYPE_TEXT        = "text"       //文本消息
-	MSG_TYPE_IMG         = "image"      //图片消息
-	MSG_TYPE_VOICE       = "voice"      //声音消息
-	MSG_TYPE_VIDEO       = "video"      //视频消息
-	MSG_TYPE_VIDEO_SHORT = "shortvideo" //短视频消息
-	MSG_TYPE_LOCATION    = "location"   //地理位置消息
-	MSG_TYPE_LINK        = "link"       //链接消息
-	MSG_TYPE_MUSIC       = "music"      //音乐消息
-	MSG_TYPE_NEWS        = "news"       //图文消息
-	MSG_TYPE_EVENT       = "event"      //事件消息
+	WechatMessageTypeText       = "text"       //文本消息
+	WechatMessageTypeImage      = "image"      //图片消息
+	WechatMessageTypeVoice      = "voice"      //声音消息
+	WechatMessageTypeVideo      = "video"      //视频消息
+	WechatMessageTypeVideoShort = "shortvideo" //短视频消息
+	WechatMessageTypeLocation   = "location"   //地理位置消息
+	WechatMessageTypeLink       = "link"       //链接消息
+	WechatMessageTypeMusic      = "music"      //音乐消息
+	WechatMessageTypeNews       = "news"       //图文消息
+	WechatMessageTypeEvent      = "event"      //事件消息
 )
 
 const (
-	MSG_EVENT_SUBSCRIBE                    = "subscribe"                    // 关注事件
-	MSG_EVENT_UNSUBSCRIBE                  = "unsubscribe"                  // 取消关注事件
-	MSG_EVENT_SCAN                         = "SCAN"                         // 扫码二维码事件
-	MSG_EVENT_LOCATION                     = "LOCATION"                     // 上报地理位置事件
-	MSG_EVENT_CLICK                        = "CLICK"                        // 点击自定义菜单拉取消息事件
-	MSG_EVENT_VIEW                         = "VIEW"                         // 点击自定义菜单跳转链接事件
-	MSG_EVENT_QUALIFICATION_VERIFY_SUCCESS = "qualification_verify_success" // 资质认证成功通知
-	MSG_EVENT_QUALIFICATION_VERIFY_FAIL    = "qualification_verify_fail"    // 资质认证失败通知
-	MSG_EVENT_NAMING_VERIFY_SUCCESS        = "naming_verify_success"        // 名称认证成功
-	MSG_EVENT_NAMING_VERIFY_FAIL           = "naming_verify_fail"           // 名称认证失败
-	MSG_EVENT_ANNUAL_RENEW                 = "annual_renew"                 // 年审通知
-	MSG_EVENT_VERIFY_EXPIRED               = "verify_expired"               // 认证过期失效通知
-	MSG_EVENT_TEMPLATESENDJOBFINISH        = "TEMPLATESENDJOBFINISH"        // 发送模板消息结果通知
+	WechatMessageEventSubscribe                  = "subscribe"                    // 关注事件
+	WechatMessageEventUnsubscribe                = "unsubscribe"                  // 取消关注事件
+	WechatMessageEventScan                       = "SCAN"                         // 扫码二维码事件
+	WechatMessageEventLocation                   = "LOCATION"                     // 上报地理位置事件
+	WechatMessageEventClick                      = "CLICK"                        // 点击自定义菜单拉取消息事件
+	WechatMessageEventView                       = "VIEW"                         // 点击自定义菜单跳转链接事件
+	WechatMessageEventQualificationVerifySuccess = "qualification_verify_success" // 资质认证成功通知
+	WechatMessageEventQualificationVerifyFail    = "qualification_verify_fail"    // 资质认证失败通知
+	WechatMessageEventNamingVerifySuccess        = "naming_verify_success"        // 名称认证成功
+	WechatMessageEventNamingVerifyFail           = "naming_verify_fail"           // 名称认证失败
+	WechatMessageEventAnnualRenew                = "annual_renew"                 // 年审通知
+	WechatMessageEventVerifyExpired              = "verify_expired"               // 认证过期失效通知
+	WechatMessageEventTemplatesendjobfinish      = "TEMPLATESENDJOBFINISH"        // 发送模板消息结果通知
 )
 
 type (
@@ -334,7 +334,7 @@ func NewMsgTextResponse(ToUserName, FromUserName, Content string) *MsgTextRespon
 	textResp := &MsgTextResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	textResp.MsgType = Value2CDATA(MSG_TYPE_TEXT)
+	textResp.MsgType = Value2CDATA(WechatMessageTypeText)
 	textResp.ToUserName = Value2CDATA(ToUserName)
 	textResp.FromUserName = Value2CDATA(FromUserName)
 	textResp.Content = Value2CDATA(Content)
@@ -365,7 +365,7 @@ func NewMsgImageResponse(ToUserName, FromUserName, MediaId string) *MsgImageResp
 	imageResp := &MsgImageResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	imageResp.MsgType = Value2CDATA(MSG_TYPE_IMG)
+	imageResp.MsgType = Value2CDATA(WechatMessageTypeImage)
 	imageResp.ToUserName = Value2CDATA(ToUserName)
 	imageResp.FromUserName = Value2CDATA(FromUserName)
 	imageResp.Image.MediaId = Value2CDATA(MediaId)
@@ -396,7 +396,7 @@ func NewMsgVoiceResponse(ToUserName, FromUserName, MediaId string) *MsgVoiceResp
 	voiceResp := &MsgVoiceResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	voiceResp.MsgType = Value2CDATA(MSG_TYPE_VOICE)
+	voiceResp.MsgType = Value2CDATA(WechatMessageTypeVoice)
 	voiceResp.ToUserName = Value2CDATA(ToUserName)
 	voiceResp.FromUserName = Value2CDATA(FromUserName)
 	voiceResp.Voice.MediaId = Value2CDATA(MediaId)
@@ -427,7 +427,7 @@ func NewMsgVideoResponse(ToUserName, FromUserName, MediaId, Title, Description s
 	videoResp := &MsgVideoResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	videoResp.MsgType = Value2CDATA(MSG_TYPE_VIDEO)
+	videoResp.MsgType = Value2CDATA(WechatMessageTypeVideo)
 	videoResp.ToUserName = Value2CDATA(ToUserName)
 	videoResp.FromUserName = Value2CDATA(FromUserName)
 	videoResp.Video.MediaId = Value2CDATA(MediaId)
@@ -460,7 +460,7 @@ func NewMsgMusicResponse(ToUserName, FromUserName, Title, Description, ThumbMedi
 	musicResp := &MsgMusicResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	musicResp.MsgType = Value2CDATA(MSG_TYPE_MUSIC)
+	musicResp.MsgType = Value2CDATA(WechatMessageTypeMusic)
 	musicResp.ToUserName = Value2CDATA(ToUserName)
 	musicResp.FromUserName = Value2CDATA(FromUserName)
 	musicResp.Music.Title = Value2CDATA(Title)
@@ -505,7 +505,7 @@ func NewMsgNewsResponse(ToUserName, FromUserName string, items []MsgNewsItemResp
 	newsResp := &MsgNewsResponse{
 		CreateTime: time.Now().Unix(),
 	}
-	newsResp.MsgType = Value2CDATA(MSG_TYPE_NEWS)
+	newsResp.MsgType = Value2CDATA(WechatMessageTypeNews)
 	newsResp.ToUserName = Value2CDATA(ToUserName)
 	newsResp.FromUserName = Value2CDATA(FromUserName)
 	newsResp.ArticleCount = len(items)
@@ -540,73 +540,73 @@ func (wm *WechatMp) wechatMessageHandler(msg []byte) string {
 
 	// 根据消息类型分别处理
 	switch common.GetMsgTypeFromWechatMessage(msg) {
-	case MSG_TYPE_EVENT:
+	case WechatMessageTypeEvent:
 		response = wm.wechatEventMessageHandler(msg)
-	case MSG_TYPE_TEXT:
+	case WechatMessageTypeText:
 		if wm.TextMessageHandler != nil {
 			var textMessage TextMessage
 			if err := xml.Unmarshal(msg, &textMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, textMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.TextMessageHandler(&textMessage)
 		}
-	case MSG_TYPE_IMG:
+	case WechatMessageTypeImage:
 		if wm.ImageMessageHandler != nil {
 			var imageMessage ImageMessage
 			if err := xml.Unmarshal(msg, &imageMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, imageMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.ImageMessageHandler(&imageMessage)
 		}
-	case MSG_TYPE_VOICE:
+	case WechatMessageTypeVoice:
 		if wm.VoiceMessageHandler != nil {
 			var voiceMessage VoiceMessage
 			if err := xml.Unmarshal(msg, &voiceMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, voiceMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.VoiceMessageHandler(&voiceMessage)
 		}
-	case MSG_TYPE_VIDEO:
+	case WechatMessageTypeVideo:
 		if wm.VideoMessageHandler != nil {
 			var videoMessage VideoMessage
 			if err := xml.Unmarshal(msg, &videoMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, videoMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.VideoMessageHandler(&videoMessage)
 		}
-	case MSG_TYPE_VIDEO_SHORT:
+	case WechatMessageTypeVideoShort:
 		if wm.ShortVideoMessageHandler != nil {
 			var shortVideoMessage ShortVideoMessage
 			if err := xml.Unmarshal(msg, &shortVideoMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, shortVideoMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.ShortVideoMessageHandler(&shortVideoMessage)
 		}
-	case MSG_TYPE_LOCATION:
+	case WechatMessageTypeLocation:
 		if wm.LocationMessageHandler != nil {
 			var locationMessage LocationMessage
 			if err := xml.Unmarshal(msg, &locationMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, locationMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.LocationMessageHandler(&locationMessage)
 		}
-	case MSG_TYPE_LINK:
+	case WechatMessageTypeLink:
 		if wm.LinkMessageHandler != nil {
 			var linkMessage LinkMessage
 			if err := xml.Unmarshal(msg, &linkMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, linkMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.LinkMessageHandler(&linkMessage)
 		}
 	default:
-		response = RESPONSE_STRING_SUCCESS
+		response = WechatResponseStringSuccess
 	}
 	return response
 }
@@ -617,133 +617,133 @@ func (wm *WechatMp) wechatEventMessageHandler(msg []byte) string {
 	var response string
 
 	switch common.GetMsgEventFromWechatMessage(msg) {
-	case MSG_EVENT_SUBSCRIBE:
+	case WechatMessageEventSubscribe:
 		// 关注公众号
 		if wm.SubscribeHandler != nil {
 			var subscribeMessage MsgEventSubscribe
 			if err := xml.Unmarshal(msg, &subscribeMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, subscribeMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.SubscribeHandler(&subscribeMessage)
 		}
-	case MSG_EVENT_UNSUBSCRIBE:
+	case WechatMessageEventUnsubscribe:
 		// 取消关注公众号
 		if wm.UnSubscribeHandler != nil {
 			var unSubscribeMessage MsgEventSubscribe
 			if err := xml.Unmarshal(msg, &unSubscribeMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, unSubscribeMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.UnSubscribeHandler(&unSubscribeMessage)
 		}
-	case MSG_EVENT_SCAN:
+	case WechatMessageEventScan:
 		// 扫码公众号二维码
 		if wm.ScanHandler != nil {
 			var scanMessage MsgEventScan
 			if err := xml.Unmarshal(msg, &scanMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, scanMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.ScanHandler(&scanMessage)
 		}
-	case MSG_EVENT_LOCATION:
+	case WechatMessageEventLocation:
 		// 上报地理位置
 		if wm.LocationHandler != nil {
 			var locationMessage MsgEventLocation
 			if err := xml.Unmarshal(msg, &locationMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, locationMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.LocationHandler(&locationMessage)
 		}
-	case MSG_EVENT_CLICK:
+	case WechatMessageEventClick:
 		// 点击自定义菜单，拉取消息
 		if wm.MenuClickHandler != nil {
 			var menuClickMessage MsgEventMenuClick
 			if err := xml.Unmarshal(msg, &menuClickMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, menuClickMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.MenuClickHandler(&menuClickMessage)
 		}
-	case MSG_EVENT_VIEW:
+	case WechatMessageEventView:
 		// 点击自定义菜单，跳转链接
 		if wm.MenuViewHandler != nil {
 			var menuViewMessage MsgEventMenuView
 			if err := xml.Unmarshal(msg, &menuViewMessage); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, menuClickMessage) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.MenuViewHandler(&menuViewMessage)
 		}
-	case MSG_EVENT_QUALIFICATION_VERIFY_SUCCESS:
+	case WechatMessageEventQualificationVerifySuccess:
 		// 资质认证成功
 		if wm.QualificationVerifySuccessHandler != nil {
 			var qualificationVerifySuccess MsgEventQualificationVerifySuccess
 			if err := xml.Unmarshal(msg, &qualificationVerifySuccess); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, qualificationVerifySuccess) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.QualificationVerifySuccessHandler(&qualificationVerifySuccess)
 		}
-	case MSG_EVENT_QUALIFICATION_VERIFY_FAIL:
+	case WechatMessageEventQualificationVerifyFail:
 		// 资质认证失败
 		if wm.QualificationVerifyFailHandler != nil {
 			var qualificationVerifyFail MsgEventQualificationVerifyFail
 			if err := xml.Unmarshal(msg, &qualificationVerifyFail); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, qualificationVerifyFail) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.QualificationVerifyFailHandler(&qualificationVerifyFail)
 		}
-	case MSG_EVENT_NAMING_VERIFY_SUCCESS:
+	case WechatMessageEventNamingVerifySuccess:
 		// 名称认证成功
 		if wm.NamingVerifySuccessHandler != nil {
 			var namingVerifySuccess MsgEventNamingVerifySuccess
 			if err := xml.Unmarshal(msg, &namingVerifySuccess); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, namingVerifySuccess) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.NamingVerifySuccessHandler(&namingVerifySuccess)
 		}
-	case MSG_EVENT_NAMING_VERIFY_FAIL:
+	case WechatMessageEventNamingVerifyFail:
 		// 名称认证失败
 		if wm.NamingVerifyFailHandler != nil {
 			var namingVerifyFail MsgEventNamingVerifyFail
 			if err := xml.Unmarshal(msg, &namingVerifyFail); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, namingVerifyFail) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.NamingVerifyFailHandler(&namingVerifyFail)
 		}
-	case MSG_EVENT_ANNUAL_RENEW:
+	case WechatMessageEventAnnualRenew:
 		// 年审通知
 		if wm.AnnualRenewHandler != nil {
 			var annualRenew MsgEventAnnualRenew
 			if err := xml.Unmarshal(msg, &annualRenew); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, annualRenew) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.AnnualRenewHandler(&annualRenew)
 		}
-	case MSG_EVENT_VERIFY_EXPIRED:
+	case WechatMessageEventVerifyExpired:
 		// 认证过期失效通知
 		if wm.VerifyExpiredHandler != nil {
 			var verifyExpired MsgEventVerifyExpired
 			if err := xml.Unmarshal(msg, &verifyExpired); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, verifyExpired) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.VerifyExpiredHandler(&verifyExpired)
 		}
-	case MSG_EVENT_TEMPLATESENDJOBFINISH:
+	case WechatMessageEventTemplatesendjobfinish:
 		// 发送模板消息结果通知
 		if wm.SendTemplateFinishHandler != nil {
 			var templateSendFinish MsgEventTemplateSendFinish
 			if err := xml.Unmarshal(msg, &templateSendFinish); err != nil {
 				fmt.Fprintf(common.WechatErrorLoggerWriter, "DecodeMsg xml.Unmarshal(message: %s, templateSendFinish) error: %+v\n", msg, err)
-				return RESPONSE_STRING_FAIL
+				return WechatResponseStringFail
 			}
 			response = wm.SendTemplateFinishHandler(&templateSendFinish)
 		}
@@ -804,12 +804,12 @@ IT科技	网络游戏	6
 */
 
 const (
-	WECHAT_TEMPLATE_SET_INDUSTRY_API = `https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=%s`         // 设置所属行业
-	WECHAT_TEMPLATE_GET_INDUSTRY_API = `https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=%s`             // 获取设置的行业信息
-	WECHAT_TEMPLATE_ADD_API          = `https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=%s`         // 从模板库中添加模板信息
-	WECHAT_TEMPLATE_GET_ALL_API      = `https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=%s` // 获取已添加至帐号下所有模板列表
-	WECHAT_TEMPLATE_DELETE_API       = `https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=%s`     // 删除模板
-	WECHAT_TEMPLATE_SEND_API         = `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s`             // 发送模板消息
+	WechatTemplateSetIndustryApi = `https://api.weixin.qq.com/cgi-bin/template/api_set_industry?access_token=%s`         // 设置所属行业
+	WechatTemplateGetIndustryApi = `https://api.weixin.qq.com/cgi-bin/template/get_industry?access_token=%s`             // 获取设置的行业信息
+	WechatTemplateAddApi         = `https://api.weixin.qq.com/cgi-bin/template/api_add_template?access_token=%s`         // 从模板库中添加模板信息
+	WechatTemplateGetAllApi      = `https://api.weixin.qq.com/cgi-bin/template/get_all_private_template?access_token=%s` // 获取已添加至帐号下所有模板列表
+	WechatTemplateDeleteApi      = `https://api.weixin.qq.com/cgi-bin/template/del_private_template?access_token=%s`     // 删除模板
+	WechatTemplateSendApi        = `https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s`             // 发送模板消息
 )
 
 type (
@@ -862,7 +862,7 @@ func (wm *WechatMp) SetTemplateIndustries(accessToken string, industryIds [2]int
 	params["industry_id1"] = industryIds[0]
 	params["industry_id2"] = industryIds[1]
 
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_TEMPLATE_SET_INDUSTRY_API, accessToken), &params)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatTemplateSetIndustryApi, accessToken), &params)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "SetTemplateIndustries http post error: %+v\n", err)
 		return nil, err
@@ -877,7 +877,7 @@ func (wm *WechatMp) SetTemplateIndustries(accessToken string, industryIds [2]int
 
 // 获取设置的行业信息
 func (wm *WechatMp) GetTemplateIndustries(accessToken string) (*TemplateIndustry, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_TEMPLATE_GET_INDUSTRY_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatTemplateGetIndustryApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetTemplateIndustries http get error: %+v\n", err)
 		return nil, err
@@ -896,7 +896,7 @@ func (wm *WechatMp) GetTemplateIndustries(accessToken string) (*TemplateIndustry
 func (wm *WechatMp) AddTemplate(accessToken, templateCode string) (*Template, error) {
 	var params = make(map[string]string)
 	params["template_id_short"] = templateCode
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_TEMPLATE_ADD_API, accessToken), &params)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatTemplateAddApi, accessToken), &params)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "AddTemplate http post error: %+v\n", err)
 		return nil, err
@@ -911,7 +911,7 @@ func (wm *WechatMp) AddTemplate(accessToken, templateCode string) (*Template, er
 
 // 获取已添加至帐号下所有模板列表
 func (wm *WechatMp) GetAllTemplates(accessToken string) (*Templates, error) {
-	resp, err := common.HTTPGet(fmt.Sprintf(WECHAT_TEMPLATE_GET_ALL_API, accessToken))
+	resp, err := common.HTTPGet(fmt.Sprintf(WechatTemplateGetAllApi, accessToken))
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "GetAllTemplates http get error: %+v\n", err)
 		return nil, err
@@ -928,7 +928,7 @@ func (wm *WechatMp) GetAllTemplates(accessToken string) (*Templates, error) {
 func (wm *WechatMp) DeleteTemplate(accessToken, templateId string) (*common.PublicError, error) {
 	var params = make(map[string]string)
 	params["template_id"] = templateId
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_TEMPLATE_DELETE_API, accessToken), &params)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatTemplateDeleteApi, accessToken), &params)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "DeleteTemplate http post error: %+v\n", err)
 		return nil, err
@@ -943,7 +943,7 @@ func (wm *WechatMp) DeleteTemplate(accessToken, templateId string) (*common.Publ
 
 // 发送模板消息
 func (wm *WechatMp) SendTemplate(accessToken string, template *SendTemplate) (*int64, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_TEMPLATE_SEND_API, accessToken), &template)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatTemplateSendApi, accessToken), &template)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "SendTemplate http post error: %+v\n", err)
 		return nil, err
@@ -965,8 +965,8 @@ func (wm *WechatMp) SendTemplate(accessToken string, template *SendTemplate) (*i
 
 ///////////////////////////////////////////////////////////  一次性订阅消息 //////////////////////////////////////////
 const (
-	WECHAT_SUBSCRIBEMSGACTION_API = `https://mp.weixin.qq.com/mp/subscribemsg?action=%s&appid=%s&scene=%d&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect`
-	WECHAT_SUBSCRIBE_TEMPLATE_API = `https://api.weixin.qq.com/cgi-bin/message/template/subscribe?access_token=%s`
+	WechatSubscribemsgActionApi = `https://mp.weixin.qq.com/mp/subscribemsg?action=%s&appid=%s&scene=%d&template_id=%s&redirect_url=%s&reserved=%s#wechat_redirect` // 需要用户同意授权，获取一次给用户推送一条订阅模板消息的机会
+	WechatSubscribeTemplateApi  = `https://api.weixin.qq.com/cgi-bin/message/template/subscribe?access_token=%s`
 )
 
 type SubscribeTemplate struct {
@@ -991,13 +991,13 @@ type SubscribeTemplateData struct {
 
 // 一次性订阅消息的授权URL
 func (wm *WechatMp) BuildSubscribeMsgURL(scene int, templateId, redirectUrl, reserved string) string {
-	return fmt.Sprintf(WECHAT_SUBSCRIBEMSGACTION_API, "get_confirm", wm.Configure.AppId, scene, templateId, redirectUrl, reserved)
+	return fmt.Sprintf(WechatSubscribemsgActionApi, "get_confirm", wm.Configure.AppId, scene, templateId, redirectUrl, reserved)
 }
 
 // 通过API推送订阅模板消息给到授权微信用户
 //TODO 待验证
 func (wm *WechatMp) SubscribeTemplate(accessToken string, template *SubscribeTemplate) (*common.PublicError, error) {
-	resp, err := common.HTTPPostJson(fmt.Sprintf(WECHAT_SUBSCRIBE_TEMPLATE_API, accessToken), &template)
+	resp, err := common.HTTPPostJson(fmt.Sprintf(WechatSubscribeTemplateApi, accessToken), &template)
 	if err != nil {
 		fmt.Fprintf(common.WechatErrorLoggerWriter, "SubscribeTemplate http post error: %+v\n", err)
 		return nil, err
