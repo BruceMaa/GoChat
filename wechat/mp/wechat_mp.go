@@ -25,7 +25,7 @@ const (
 	WechatResponseStringFail    = "fail"
 	WechatResponseStringInvalid = "invalid wechat server"
 
-	WechatLanguageZhCn = "zh_CH" // 微信语言，简体中文
+	WechatLanguageZhCn = "zh_CN" // 微信语言，简体中文
 	WechatLanguageZhTw = "zh_TW" // 微信语言，繁体中文
 	WechatLanguageEn   = "en"    // 微信语言，英文
 
